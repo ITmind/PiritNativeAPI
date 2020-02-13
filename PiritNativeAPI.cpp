@@ -10,7 +10,13 @@
 #include <wchar.h>
 #include <string>
 #include <locale.h>
-#include "AddInNative.h"
+#include "PiritNativeAPI.h"
+#include <fcntl.h>
+#include <stdio.h>
+
+//#include <stdlib.h>
+
+
 
 static const wchar_t* g_PropNames[] = {
     L"Textt",
@@ -106,8 +112,23 @@ CAddInNative::CAddInNative() noexcept
     m_iConnect = 0;
     Text = nullptr;
     ::convFromShortWchar(&Text, L"heelo");
-    //Text = L"heelo";
     Intt = 5;
+
+    FILE* fd = fopen("c:\\temp\\com.txt", "w+");
+    if (fd != 0) {
+        char buf[10] = "012345678";
+        fwrite(&buf, sizeof(char), 9, fd);
+        fclose(fd);
+    }
+
+    /*FILE* fp;
+    float f = 12.23;
+    if ((fp = fopen("test", "wb")) == NULL) {
+        printf("Cannot open file.");
+    }
+    fwrite(&f, sizeof(float), 1, fp);
+    fclose(fp);*/
+
 }
 //---------------------------------------------------------------------------//
 CAddInNative::~CAddInNative()
@@ -131,7 +152,7 @@ void CAddInNative::Done()
 //---------------------------------------------------------------------------//
 bool CAddInNative::RegisterExtensionAs(WCHAR_T** wsLanguageExt)
 { 
-    const wchar_t* wsExtension = L"AddInNativeExtension";
+    const wchar_t* wsExtension = L"PiritKKT";
     int iActualSize = ::wcslen(wsExtension) + 1;
     WCHAR_T* dest = 0;
 

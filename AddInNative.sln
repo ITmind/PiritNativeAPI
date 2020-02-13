@@ -3,32 +3,58 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AddInNative", "AddInNative.vcxproj", "{55890DF2-D13E-4C89-A01D-79CAD6726246}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PiritNativeAPI", "AddInNative.vcxproj", "{55890DF2-D13E-4C89-A01D-79CAD6726246}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleApplicationС", "..\ConsoleApplicationС\ConsoleApplicationС.vcxproj", "{68792E8F-3615-4FFE-B866-CCE781F2E2D1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KKTPiritLib", "..\KKTPiritLib\KKTPiritLib.vcxproj", "{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Debug|ARM.ActiveCfg = Debug|Win32
+		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Debug|ARM64.ActiveCfg = Debug|Win32
 		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Debug|Win32.ActiveCfg = Debug|Win32
 		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Debug|Win32.Build.0 = Debug|Win32
 		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Debug|x64.ActiveCfg = Debug|Win32
+		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Release|ARM.ActiveCfg = Release|Win32
+		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Release|ARM64.ActiveCfg = Release|Win32
 		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Release|Win32.ActiveCfg = Release|Win32
 		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Release|Win32.Build.0 = Release|Win32
 		{55890DF2-D13E-4C89-A01D-79CAD6726246}.Release|x64.ActiveCfg = Release|Win32
+		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Debug|ARM.ActiveCfg = Debug|Win32
+		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Debug|ARM64.ActiveCfg = Debug|Win32
 		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Debug|Win32.ActiveCfg = Debug|Win32
 		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Debug|Win32.Build.0 = Debug|Win32
 		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Debug|x64.ActiveCfg = Debug|x64
 		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Debug|x64.Build.0 = Debug|x64
+		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Release|ARM.ActiveCfg = Release|Win32
+		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Release|ARM64.ActiveCfg = Release|Win32
 		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Release|Win32.ActiveCfg = Release|Win32
 		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Release|Win32.Build.0 = Release|Win32
 		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Release|x64.ActiveCfg = Release|x64
 		{68792E8F-3615-4FFE-B866-CCE781F2E2D1}.Release|x64.Build.0 = Release|x64
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Debug|ARM.ActiveCfg = Debug|Win32
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Debug|Win32.ActiveCfg = Debug|Win32
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Debug|Win32.Build.0 = Debug|Win32
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Debug|x64.ActiveCfg = Debug|x64
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Debug|x64.Build.0 = Debug|x64
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Release|ARM.ActiveCfg = Release|Win32
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Release|ARM64.ActiveCfg = Release|Win32
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Release|Win32.ActiveCfg = Release|Win32
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Release|Win32.Build.0 = Release|Win32
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Release|x64.ActiveCfg = Release|x64
+		{72D3A252-1B05-4CE8-AE68-D1FB94CA1122}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,6 +15,7 @@
     <RootNamespace>testCPP</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>PiritNativeAPI</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -71,7 +72,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <ModuleDefinitionFile>AddInNative.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>PiritNativeAPI.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -102,7 +103,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AddInNative.cpp" />
+    <ClCompile Include="PiritNativeAPI.cpp" />
     <ClCompile Include="dllmain.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -117,13 +118,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AddInNative.def" />
+    <None Include="PiritNativeAPI.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AddInNative.h" />
+    <ClInclude Include="PiritNativeAPI.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

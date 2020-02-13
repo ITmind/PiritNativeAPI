@@ -1,4 +1,4 @@
-LIBRARY    "AddInNative.dll"
+LIBRARY    "PiritNativeAPI.dll"
 
 EXPORTS
 GetClassObject
