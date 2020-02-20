@@ -14,9 +14,11 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-//#include <stdlib.h>
+#include "CPiritKKT.h"
+#include "1cv8.h"
 
 
+#define DEVICEID L"device1"
 
 static const wchar_t* g_PropNames[] = {
     L"Textt",
@@ -37,7 +39,17 @@ static const wchar_t* g_MethodNames[] = {
     L"GetCurrentStatus",
     L"ReportCurrentStatusOfSettlements",
     L"OpenCashDrawer",
-    L"GetLineLength"
+    L"GetLineLength",
+    L"GetInterfaceRevision",
+    L"GetDescription",
+    L"GetLastError",
+    L"GetParameters",
+    L"SetParameter",
+    L"Open",
+    L"Close",
+    L"DeviceTest",
+    L"GetAdditionalActions",
+    L"DoAdditionalAction"
 };
 
 static const wchar_t* g_PropNamesRu[] = {
@@ -59,7 +71,17 @@ static const wchar_t* g_MethodNamesRu[] = {
     L"ѕолучить“екущее—осто€ние",
     L"ќтчетќ“екущем—осто€нии–асчетов",
     L"ќткрытьƒенежныйящик",
-    L"ѕолучитьЎирину—троки"
+    L"ѕолучитьЎирину—троки",
+    L"ѕолучить–евизию»нтерфейса",
+    L"ѕолучитьќписание",
+    L"ѕолучитьќшибку",
+    L"ѕолучитьѕараметры",
+    L"”становитьѕараметр",
+    L"ѕодключить",
+    L"ќтключить",
+    L"“ест”стройства",
+    L"ѕолучитьƒополнительныеƒействи€",
+    L"¬ыполнитьƒополнительноеƒействие"
 };
 
 static const wchar_t g_kClassNames[] = L"CAddInNative"; //|OtherClass1|OtherClass2";
@@ -106,28 +128,23 @@ AppCapabilities SetPlatformCapabilities(const AppCapabilities capabilities)
 
 //---------------------------------------------------------------------------//
 //CAddInNative
-CAddInNative::CAddInNative() noexcept
+CAddInNative::CAddInNative()
 {
     m_iMemory = 0;
     m_iConnect = 0;
     Text = nullptr;
     ::convFromShortWchar(&Text, L"heelo");
     Intt = 5;
-
-    FILE* fd = fopen("c:\\temp\\com.txt", "w+");
+    addInParam = _1cv8::CTableParameters();
+   /* FILE* fd = fopen("c:\\temp\\com.txt", "w+");
     if (fd != 0) {
         char buf[10] = "012345678";
         fwrite(&buf, sizeof(char), 9, fd);
         fclose(fd);
-    }
+    }*/
+    lastError = AddInError{ 0, L"нет ошибок" };
+    kkt = CPiritKKT();
 
-    /*FILE* fp;
-    float f = 12.23;
-    if ((fp = fopen("test", "wb")) == NULL) {
-        printf("Cannot open file.");
-    }
-    fwrite(&f, sizeof(float), 1, fp);
-    fclose(fp);*/
 
 }
 //---------------------------------------------------------------------------//
@@ -229,6 +246,13 @@ bool CAddInNative::CreateVarFromWchar(tVariant* var, WCHAR* str) {
         return true;
     }
     return false;
+}
+
+bool CAddInNative::CreateVarFromString(tVariant* var, wstring str) {
+    //WCHAR* wstr = new WCHAR[str.length()];
+    //mbtowc(wstr, str.c_str(), str.length());
+    WCHAR* wstr = (WCHAR *)str.c_str();
+    return CAddInNative::CreateVarFromWchar(var, wstr);
 }
 
 bool CAddInNative::GetPropVal(const long lPropNum, tVariant* pvarPropVal)
@@ -383,6 +407,19 @@ long CAddInNative::GetNParams(const long lMethodNum)
         return 1;
     case eGetLineLength:
         return 2;
+    case eGetInterfaceRevision:
+        return 0;
+    case eGetDescription:
+    case eGetLastError: 
+    case eGetParameters:
+    case eOpen:
+    case eClose:
+    case eGetAdditionalActions:
+    case eDoAdditionalAction:
+        return 1;
+    case eSetParameter:
+    case eDeviceTest:
+        return 2;
     default:
         return 0;
     }
@@ -423,27 +460,6 @@ bool CAddInNative::CallAsProc(const long lMethodNum,
             if (imsgbox)
             {
                 imsgbox->Alert(L"alert");
-                /*IPlatformInfo* info = (IPlatformInfo*)cnn->GetInterface(eIPlatformInfo);
-                assert(info);
-                const IPlatformInfo::AppInfo* plt = info->GetPlatformInfo();
-                if (!plt)
-                    break;
-                tVariant retVal;
-                tVarInit(&retVal);
-                if (imsgbox->Confirm(Text, &retVal))
-                {
-                    bool succeed = TV_BOOL(&retVal);
-                    WCHAR_T* result = 0;
-
-                    if (succeed)
-                        ::convToShortWchar(&result, L"OK");
-                    else
-                        ::convToShortWchar(&result, L"Cancel");
-
-                    imsgbox->Alert(result);
-                    delete[] result;
-
-                }*/
             }
         }
         return true;
@@ -458,24 +474,272 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
     switch (lMethodNum)
     {
     case eGetDataKKT:
+    {
         if (lSizeArray != 2 || !paParams)
             return false;
+
         if (TV_VT(paParams) != VTYPE_PWSTR) {
             return false;
         }
         bool result = false;
 
-        if (paParams->strLen > 0)
-        {
-            result = true;
-            tVariant* paParams2 = paParams + 1;
-            CreateVarFromWchar(paParams2, TV_WSTR(paParams));
-        }
+        auto kkt_data = kkt.GetDataKKT();
+        _1cv8::CTableParametersKKT outtable(kkt_data.data);
+
+        tVariant* outParams = paParams + 1;
+        CreateVarFromString(outParams, outtable.toXML());
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = result;
-     
+    }
+
+    return true;
+    case eOperationFN:
+    {
+        //ничего не будем делать
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+    return true;
+    case eOpenShift:
+    {
+        if (lSizeArray != 3 || !paParams)
+            return false;
+        auto paParams2 = paParams + 1;
+        auto paParams3 = paParams + 2;
+        _1cv8::CInputParameters inputParam(TV_WSTR(paParams2));
+        auto kkt_data = kkt.OpenShift(inputParam.CashierName);
+        if (!kkt_data.result) {
+            lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
+            TV_VT(pvarRetValue) = VTYPE_BOOL;
+            TV_BOOL(pvarRetValue) = false;
+            return true;
+        }
+        _1cv8::COutputParameters outtable = _1cv8::COutputParameters();
+        CreateVarFromString(paParams3, outtable.toXML());
+
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+    return true;
+    case eCloseShift:
+    {
+        if (lSizeArray != 3 || !paParams)
+            return false;
+        auto paParams2 = paParams + 1;
+        auto paParams3 = paParams + 2;
+        auto kkt_data = kkt.CloseShift();
+        if (!kkt_data.result) {
+            lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
+            TV_VT(pvarRetValue) = VTYPE_BOOL;
+            TV_BOOL(pvarRetValue) = false;
+            return true;
+        }
+        _1cv8::COutputParameters outtable(kkt_data.data);
+        CreateVarFromString(paParams3, outtable.toXML());
+
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+    return true;
+    case eProcessCheck:
+    {
+        if (lSizeArray != 4 || !paParams)
+            return false;
+        auto paParams2 = paParams + 1;
+        auto paParams3 = paParams + 2;
+        auto paParams4 = paParams + 3;
+
+        _1cv8::CCheckPackage inputParam(TV_WSTR(paParams3));
+        
+        _1cv8::CDocumentOutputParameters out = _1cv8::CDocumentOutputParameters();
+        bool result = PrintCheck(inputParam, out);
+        if (!result) {
+            TV_VT(pvarRetValue) = VTYPE_BOOL;
+            TV_BOOL(pvarRetValue) = false;
+            return true;
+        }
+
+        CreateVarFromString(paParams4, out.toXML());
+
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+    return true;
+    case eProcessCorrectionCheck:
+        lastError = AddInError{ 0, L"ProcessCorrectionCheck not implement" };
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
         return true;
+
+    case ePrintTextDocument:
+        lastError = AddInError{ 0, L"ePrintTextDocument not implement" };
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
+        return true;
+
+    case eCashInOutcome:
+        lastError = AddInError{ 0, L"eCashInOutcome not implement" };
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
+        return true;
+
+    case ePrintXReport:
+        lastError = AddInError{ 0, L"ePrintXReport not implement" };
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
+        return true;
+
+    case ePrintCheckCopy:
+        lastError = AddInError{ 0, L"ePrintCheckCopy not implement" };
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
+        return true;
+
+    case eGetCurrentStatus:
+        lastError = AddInError{ 0, L"eGetCurrentStatus not implement" };
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
+        return true;
+
+    case eReportCurrentStatusOfSettlements:
+        lastError = AddInError{ 0, L"eReportCurrentStatusOfSettlements not implement" };
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
+        return true;
+
+    case eOpenCashDrawer:
+        lastError = AddInError{ 0, L"eOpenCashDrawer not implement" };
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
+        return true;
+
+    case eGetLineLength:
+        lastError = AddInError{ 0, L"eGetLineLength not implement" };
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
+        return true;
+
+    case eGetInterfaceRevision:
+        TV_VT(pvarRetValue) = VTYPE_I4;
+        TV_I4(pvarRetValue) = 3001;
+        return true;
+
+    case eGetDescription:
+    {
+        if (lSizeArray != 1 || !paParams)
+            return false;
+
+        _1cv8::CDriverDescription outtable = _1cv8::CDriverDescription();
+        CreateVarFromString(paParams, outtable.toXML());
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+
+    return true;
+    case eGetLastError:
+    {
+        if (lSizeArray != 1 || !paParams)
+            return false;
+
+        CreateVarFromString(paParams, lastError.description);
+        TV_VT(pvarRetValue) = VTYPE_I4;
+        TV_I4(pvarRetValue) = lastError.kod;
+    }
+
+    return true;
+    case eGetParameters:
+    {
+        if (lSizeArray != 1 || !paParams)
+            return false;
+        CreateVarFromString(paParams, addInParam.toXML());
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+
+    return true;
+
+    case eSetParameter:
+    {
+        if (lSizeArray != 2 || !paParams)
+            return false;
+        wstring paramName = TV_WSTR(paParams);
+        tVariant* paramVal = paParams + 1;
+        if (paramName == L"Port") {
+            addInParam.Port = TV_WSTR(paramVal);
+        }
+        /* for (_1cv8::CParam param: addInParam.parametrs)
+         {
+             if (param.Name == paramName) {
+                 param.DefaultValue = to_wstring(TV_INT(paramVal));
+             }
+         }*/
+
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+
+    return true;
+    case eOpen:
+    {
+        if (lSizeArray != 1 || !paParams)
+            return false;
+
+        kkt.Connect(addInParam.Port);
+        CreateVarFromString(paParams, DEVICEID);
+
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+
+    return true;
+    case eClose:
+    {
+        if (lSizeArray != 1 || !paParams)
+            return false;
+
+        kkt.Disconnect();
+
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+
+    return true;
+    case eDeviceTest:
+    {
+        if (lSizeArray != 2 || !paParams)
+            return false;
+
+        CreateVarFromString(paParams, L"”стройство подключено");
+        CreateVarFromString(paParams + 1, L"нет ограничений");
+
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+
+    return true;
+    case eGetAdditionalActions:
+    {
+        if (lSizeArray != 1 || !paParams)
+            return false;
+
+        CreateVarFromString(paParams, LR"delimiter(<?xml version="1.0" encoding="UTF-8"?>
+ <Actions>
+      <Action Name="TestSetting" Caption="“естова€ копка"/> 
+ </Actions>)delimiter");
+
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+    }
+
+    return true;
+    case eDoAdditionalAction:
+    {
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = false;
+    }
+
+    return true;
     }
 
     return false; 
@@ -606,4 +870,61 @@ long CAddInNative::getIndexInArr(const wchar_t* names[], const wchar_t* name,
         }
     }
     return ret;
+}
+
+bool CAddInNative::PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOutputParameters& out) {
+#define CHECK(func) answer = func;if (!answer.result) lastError = AddInError{ 1, L#func + answer.kod }; return false;
+
+    pirit_answer answer;
+
+    wstring operationType;
+    if (xmlcheck.OperationType == L"1") operationType = L"2"; //чек на продажу
+    else if (xmlcheck.OperationType == L"2") operationType = L"3"; //чек на продажу (возврат)
+    else if (xmlcheck.OperationType == L"3") operationType = L"6"; //расход ƒ—
+    else if (xmlcheck.OperationType == L"4") operationType = L"7"; //расход ƒ— (возврат)
+
+    CHECK(kkt.OpenReceipt(operationType, xmlcheck.TaxationSystem, xmlcheck.CashierName));
+
+    for (auto pos : xmlcheck.Positions) {
+        wstring VATRate = L"0";
+        if (pos.VATRate == L"none") VATRate = L"4";
+        else if (pos.VATRate == L"20") VATRate = L"1";
+        else if (pos.VATRate == L"10") VATRate = L"2";
+        else if (pos.VATRate == L"0") VATRate = L"3";
+        else if (pos.VATRate == L"20/120") VATRate = L"5";
+        else if (pos.VATRate == L"10/110") VATRate = L"6";
+
+        CHECK(kkt.AddGoods(pos.Name, pos.Quantity, pos.PriceWithDiscount, pos.DiscountAmount
+            , VATRate, pos.PaymentMethod, pos.CalculationSubject));
+    }
+
+    CHECK(kkt.Subtotal());
+    //0 - наличные
+    //1 - безналичные
+    //13 - аванс
+    //14 - кредит
+    //15 - ина€
+    if (xmlcheck.Payments.Cash != L"0")
+        CHECK(kkt.Payment(L"0", xmlcheck.Payments.Cash));
+    if (xmlcheck.Payments.ElectronicPayment != L"0")
+        CHECK(kkt.Payment(L"1", xmlcheck.Payments.ElectronicPayment));
+    if (xmlcheck.Payments.PrePayment != L"0")
+        CHECK(kkt.Payment(L"13", xmlcheck.Payments.PrePayment));
+    if (xmlcheck.Payments.PostPayment != L"0")
+        CHECK(kkt.Payment(L"14", xmlcheck.Payments.PostPayment));
+    if (xmlcheck.Payments.Barter != L"0")
+        CHECK(kkt.Payment(L"15", xmlcheck.Payments.Barter));
+
+    //LOG(PiritKKT.CancelReceipt());
+    CHECK(kkt.CloseReceipt());
+
+	out.CheckNumber = answer.data[0];
+	out.ShiftNumber = answer.data[5];
+	out.ShiftClosingCheckNumber = answer.data[6];
+	out.FiscalSign = answer.data[4];
+	out.DateTime = answer.data[7];
+	out.DateTime += answer.data[8];
+    
+
+    return true;
 }

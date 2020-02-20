@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<bundle xmlns="http://v8.1c.ru/8.2/addin/bundle" name="ITmindCo">
+  <component os="Windows" path="PiritNativeAPI.dll" type="native" arch="i386" />
+</bundle>

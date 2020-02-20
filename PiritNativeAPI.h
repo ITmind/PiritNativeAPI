@@ -4,11 +4,14 @@
 
 #ifndef __linux__
 #include <wtypes.h>
+#include <string>
 #endif //__linux__
 
 #include "ComponentBase.h"
 #include "AddInDefBase.h"
 #include "IMemoryManager.h"
+#include "CPiritKKT.h"
+#include "1cv8.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // class CAddInNative
@@ -39,10 +42,20 @@ public:
         eReportCurrentStatusOfSettlements,
         eOpenCashDrawer,
         eGetLineLength,
+        eGetInterfaceRevision,
+        eGetDescription,
+        eGetLastError,
+        eGetParameters,
+        eSetParameter,
+        eOpen,
+        eClose,
+        eDeviceTest,
+        eGetAdditionalActions,
+        eDoAdditionalAction,
         eLastMethod      // Always last
     };
 
-    CAddInNative(void) noexcept;
+    CAddInNative(void);
     virtual ~CAddInNative();
     // IInitDoneBase
     virtual bool ADDIN_API Init(void*);
@@ -74,6 +87,9 @@ public:
     // LocaleBase
     virtual void ADDIN_API SetLocale(const WCHAR_T* loc);
     bool CreateVarFromWchar(tVariant* var, WCHAR* str);
+    bool CreateVarFromString(tVariant* var, std::wstring str);
+    bool PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOutputParameters &out);
+
 private:
     long getIndexInArr(const wchar_t* names[], const wchar_t* name, const uint32_t size) const;
     void addError(uint32_t wcode, const wchar_t* source,
@@ -85,5 +101,12 @@ private:
 
     wchar_t* Text;
     int8_t Intt;
+    CPiritKKT kkt;
+    _1cv8::CTableParameters addInParam;
+
+    struct AddInError {
+        int32_t kod;
+        wstring description;
+    } lastError;
 };
 #endif //__ADDINNATIVE_H__
