@@ -1,6 +1,3 @@
-
-#include "stdafx.h"
-
 #ifdef __linux__
 #include <unistd.h>
 #include <stdlib.h>

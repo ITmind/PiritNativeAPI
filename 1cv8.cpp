@@ -1,6 +1,6 @@
 #include "1cv8.h"
 #include "CPiritKKT.h"
-#include "pugixml/src/pugixml.hpp"
+#include "pugixml.hpp"
 #include <map>
 #include <sstream>
 
