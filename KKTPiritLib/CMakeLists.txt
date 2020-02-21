@@ -1,11 +1,3 @@
-SET(KKTPiritLib_SRC 
-    CPiritKKT.cpp
-    CPiritKKT.h
-    ceSerial.cpp
-    ceSerial.h
-    convstring.h
-    PiritPacket.cpp
-    PiritPacket.h
-    )
 
-add_library(KKTPiritLib STATIC ${KKTPiritLib_SRC})
+add_library(KKTPiritLib STATIC CPiritKKT.cpp ceSerial.cpp PiritPacket.cpp)
+target_include_directories(KKTPiritLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,0 +1,4 @@
+SET(BIN_PATCH ${CMAKE_CURRENT_LIST_DIR}/bin)
+execute_process(COMMAND ${CMAKE_COMMAND} -E tar -cf PiritNativeAPI.zip INFO.xml MANIFEST.xml PiritNativeAPI.dll WORKING_DIRECTORY ${BIN_PATCH})
+
+message(${CMAKE_CURRENT_LIST_DIR})
