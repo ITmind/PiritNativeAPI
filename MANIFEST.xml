@@ -2,4 +2,5 @@
 
 <bundle xmlns="http://v8.1c.ru/8.2/addin/bundle" name="ITmindCo">
   <component os="Windows" path="PiritNativeAPI.dll" type="native" arch="i386" />
+  <component os="Windows" path="PiritNativeAPI.dll" type="native" arch="x86_64" />
 </bundle>

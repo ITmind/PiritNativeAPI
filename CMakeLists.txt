@@ -1,5 +1,3 @@
-# Cmake script for project AddInNative
-# autor: 1C
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.15)
 
@@ -16,10 +14,10 @@ SET(AddInNative_SRC
     1cv8.cpp
     )
 
+#SET(CMAKE_CXX_FLAGS "/D_WINDOWS /D_WIN64 /GR /EHsc")
+#set_property(PROPERTY CMAKE_CXX_FLAGS /Df)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
-#include_directories(${CMAKE_SOURCE_DIR}/KKTPiritLib)
-#include_directories(${CMAKE_SOURCE_DIR}/pugixml)
 
 SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_SOURCE_DIR})
 SET(AddInDef_SRC)
@@ -36,7 +34,8 @@ if (UNIX)
 	ADD_DEFINITIONS(-D__linux__ )
 else()
     SET(AddInDef_SRC PiritNativeAPI.def)
-    add_definitions(-DUNICODE -DWIN32)
+    add_definitions(-DUNICODE -D_WIN64)
+    #-DWIN32
 endif()
 
 add_subdirectory(KKTPiritLib)

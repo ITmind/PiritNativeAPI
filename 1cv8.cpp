@@ -159,12 +159,12 @@ namespace _1cv8 {
         ShiftNumber = L"1";
         CheckNumber = L"1";
         ShiftClosingCheckNumber = L"1";
-        DateTime = L"010120235959";
+        DateTime = L"";
         ShiftState = L"1";
         CashBalance = L"0";
         BacklogDocumentsCounter = L"0";
         BacklogDocumentFirstNumber = L"0";
-        BacklogDocumentFirstDateTime = L"0";
+        BacklogDocumentFirstDateTime = L"";
         FNError = L"False";
         FNOverflow = L"False";
         FNFail = L"False";
@@ -192,7 +192,6 @@ namespace _1cv8 {
         pugi::xml_node root = doc.append_child(L"OutputParameters");
         pugi::xml_node parameters = root.append_child(L"Parameters");
         pugi::xml_attribute attr;
-        ADDATTR(parameters, ShiftNumber);
         ADDATTR(parameters, ShiftNumber);
         ADDATTR(parameters, CheckNumber);
         ADDATTR(parameters, ShiftClosingCheckNumber);
@@ -324,7 +323,7 @@ namespace _1cv8 {
         IntegrationComponent = L"False";
         MainDriverInstalled = L"False";
         DriverVersion = L"0.1";
-        IntegrationComponentVersion = L"0.0.1.1";
+        IntegrationComponentVersion = L"0.0.1.2";
         DownloadURL = L"www.github.com";
         LogIsEnabled = L"False";
         LogPath = L"";

@@ -478,16 +478,21 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         if (TV_VT(paParams) != VTYPE_PWSTR) {
             return false;
         }
-        bool result = false;
 
         auto kkt_data = kkt.GetDataKKT();
+        if (!kkt_data.result) {
+            lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
+            TV_VT(pvarRetValue) = VTYPE_BOOL;
+            TV_BOOL(pvarRetValue) = false;
+            return true;
+        }
         _1cv8::CTableParametersKKT outtable(kkt_data.data);
 
         tVariant* outParams = paParams + 1;
         CreateVarFromString(outParams, outtable.toXML());
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
-        TV_BOOL(pvarRetValue) = result;
+        TV_BOOL(pvarRetValue) = true;
     }
 
     return true;
@@ -710,7 +715,7 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
             return false;
 
         CreateVarFromString(paParams, L"Устройство подключено");
-        CreateVarFromString(paParams + 1, L"нет ограничений");
+        CreateVarFromString(paParams + 1, L"");
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = true;
