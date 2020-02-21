@@ -185,10 +185,10 @@ pirit_answer CPiritKKT::OpenShift(wstring CashierName)
     return KKT_ANSWER(answer.error);
 }
 
-pirit_answer CPiritKKT::CloseShift()
+pirit_answer CPiritKKT::CloseShift(wstring CashierName)
 {
     vector<wstring> data;
-    data.push_back(L"Кулик");
+    data.push_back(CashierName);
     data.push_back(L"0");
     PiritPacket request = PiritPacket(L"21", data);
     PiritPacket answer = Send(request);

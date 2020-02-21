@@ -74,7 +74,7 @@ _1cv8::COutputParameters ShiftClose(CPiritKKT& PiritKKT)
 {
     _1cv8::COutputParameters out = _1cv8::COutputParameters();
 
-    auto answer = PiritKKT.CloseShift();
+    auto answer = PiritKKT.CloseShift(L"Кулик");
     if (answer.result) {
         //out.ShiftNumber = 
     }

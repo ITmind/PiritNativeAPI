@@ -172,10 +172,16 @@ namespace _1cv8 {
 
 	COutputParameters::COutputParameters(vector<wstring> fromKKT):COutputParameters()
 	{
-        ShiftNumber = fromKKT.at(5);
-        CheckNumber = fromKKT.at(0);
-        ShiftClosingCheckNumber = fromKKT.at(6);
-        DateTime = fromKKT.at(7) + fromKKT.at(8);
+        try {
+            ShiftNumber = fromKKT.at(5);
+            CheckNumber = fromKKT.at(0);
+            ShiftClosingCheckNumber = fromKKT.at(6);
+            DateTime = fromKKT.at(7) + fromKKT.at(8);
+        }
+        catch (const std::out_of_range & ex)
+        {
+            //std::cout << "out_of_range Exception Caught :: " << ex.what() << std::endl;
+        }
 	}
 
 	wstring COutputParameters::toXML()
@@ -206,22 +212,17 @@ namespace _1cv8 {
 
     CTableParametersKKT::CTableParametersKKT()
     {
-    }
-
-    CTableParametersKKT::CTableParametersKKT(vector<wstring> fromKKT20command)
-    {
-        //т.к. пририт возвращает не все, просто запишем любые значения
-        KKTNumber = fromKKT20command.at(3);
-        KKTSerialNumber = fromKKT20command.at(0);
-        FirmwareVersion = fromKKT20command.at(1);
+        KKTNumber = L"1";
+        KKTSerialNumber = L"1";
+        FirmwareVersion = L"0";
         Fiscal = L"true";
         FFDVersionFN = L"1.1";
         FFDVersionKKT = L"1.0.5";
         FNSerialNumber = L"1";
         DocumentNumber = L"1";
-        DateTime = fromKKT20command.at(5);
+        DateTime = L"010120235959";
         CompanyName = L"Company";
-        INN = fromKKT20command.at(2);
+        INN = L"";
         SaleAddress = L"";
         SaleLocation = L"";
         TaxationSystems = L"0";
@@ -241,7 +242,22 @@ namespace _1cv8 {
         OFDCompanyINN = L"OFD INN";
         FNSURL = L"OFD site";
         SenderEmail = L"SenderEmail";
+    }
 
+    CTableParametersKKT::CTableParametersKKT(vector<wstring> fromKKT20command):CTableParametersKKT()
+    {
+        try {
+            //т.к. пририт возвращает не все, просто запишем любые значения
+            KKTNumber = fromKKT20command.at(3);
+            KKTSerialNumber = fromKKT20command.at(0);
+            FirmwareVersion = fromKKT20command.at(1);
+            DateTime = fromKKT20command.at(5);
+            INN = fromKKT20command.at(2);
+        }
+        catch (const std::out_of_range & ex)
+        {
+            //std::cout << "out_of_range Exception Caught :: " << ex.what() << std::endl;
+        }
     }
 
     wstring CTableParametersKKT::toXML()

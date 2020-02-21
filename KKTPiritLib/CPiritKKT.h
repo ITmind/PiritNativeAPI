@@ -37,7 +37,7 @@ public:
 	//команды ККТ
 	pirit_answer StartWork();
 	pirit_answer OpenShift(wstring CashierName);
-	pirit_answer CloseShift();
+	pirit_answer CloseShift(wstring CashierName);
 	pirit_answer OpenReceipt(wstring OperationType, wstring TaxationSystem, wstring CashierName);
 	pirit_answer CloseReceipt();
 	pirit_answer CancelReceipt();

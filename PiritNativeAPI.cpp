@@ -525,14 +525,16 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
             return false;
         auto paParams2 = paParams + 1;
         auto paParams3 = paParams + 2;
-        auto kkt_data = kkt.CloseShift();
+        _1cv8::CInputParameters inputParam(TV_WSTR(paParams2));
+        auto kkt_data = kkt.CloseShift(inputParam.CashierName);
         if (!kkt_data.result) {
             lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
             TV_VT(pvarRetValue) = VTYPE_BOOL;
             TV_BOOL(pvarRetValue) = false;
             return true;
         }
-        _1cv8::COutputParameters outtable(kkt_data.data);
+
+        _1cv8::COutputParameters outtable = _1cv8::COutputParameters();
         CreateVarFromString(paParams3, outtable.toXML());
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
