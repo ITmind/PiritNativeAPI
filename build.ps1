@@ -11,15 +11,11 @@ Function Add-Bin {
 }
 
 Function Set-Env($arch) {
-    $__VCVARSALL_TARGET_ARCH = $arch
-    $__VCVARSALL_HOST_ARCH = "x64"
-    $__VCVARSALL_VSDEVCMD_ARGS = "-arch=$__VCVARSALL_TARGET_ARCH -host_arch=$__VCVARSALL_HOST_ARCH"
-    Write-Output $__VCVARSALL_VSDEVCMD_ARGS
 
     $installationPath = "c:\Program Files (x86)\Microsoft Visual Studio\2019\Community"
-    $setenvcommand = "$installationPath\\VC\Auxiliary\Build\vcvars64.bat"
+    $setenvcommand = "$installationPath\\VC\Auxiliary\Build\vcvarsall.bat"
     
-    & "${env:COMSPEC}" /s /c "`"$setenvcommand`" && set" | foreach-object {
+    & "${env:COMSPEC}" /s /c "`"$setenvcommand`" $arch && set" | foreach-object {
         if ($_.Contains("=")) {
             $name, $value = $_ -split '=', 2
             set-content env:\"$name" $value
@@ -36,7 +32,7 @@ Function Generate($arch) {
     Write-Output "**************************************************"
     $CMAKE_INSTALL_PREFIX = "$PSScriptRoot\out\install\$arch-Debug"
     $BUILDPATCH = "$PSScriptRoot\out\$arch-Debug"
-    & cmake.exe  -G "Ninja" -DCMAKE_INSTALL_PREFIX:PATH=$CMAKE_INSTALL_PREFIX -DCMAKE_CXX_COMPILER:FILEPATH="cl.exe" -DCMAKE_C_COMPILER:FILEPATH="cl.exe" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_MAKE_PROGRAM="ninja.exe" -S "$PSScriptRoot" -B $BUILDPATCH
+    & cmake.exe  -G "Ninja" -DCMAKE_INSTALL_PREFIX:PATH=$CMAKE_INSTALL_PREFIX -DCMAKE_CXX_COMPILER:FILEPATH="cl.exe" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_MAKE_PROGRAM="ninja.exe" -S "$PSScriptRoot" -B $BUILDPATCH
 }
 
 function Build($arch) {
