@@ -559,6 +559,7 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         _1cv8::CDocumentOutputParameters out = _1cv8::CDocumentOutputParameters();
         bool result = PrintCheck(inputParam, out);
         if (!result) {
+            //lastError = AddInError{ 0, L"PrintCheck error" };
             TV_VT(pvarRetValue) = VTYPE_BOOL;
             TV_BOOL(pvarRetValue) = false;
             return true;
@@ -601,9 +602,19 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         return true;
 
     case eGetCurrentStatus:
-        lastError = AddInError{ 0, L"eGetCurrentStatus not implement" };
+    {
+        if (lSizeArray != 3 || !paParams)
+            return false;
+        auto paParams2 = paParams + 1;
+        auto paParams3 = paParams + 2;
+        _1cv8::CInputParameters inputParam(TV_WSTR(paParams2));
+        //TODO: необходимо получать номер смены и номер чека
+        _1cv8::COutputParameters outtable = _1cv8::COutputParameters();
+        CreateVarFromString(paParams3, outtable.toXML());
+
         TV_VT(pvarRetValue) = VTYPE_BOOL;
-        TV_BOOL(pvarRetValue) = false;
+        TV_BOOL(pvarRetValue) = true;
+    }
         return true;
 
     case eReportCurrentStatusOfSettlements:
@@ -877,7 +888,7 @@ long CAddInNative::getIndexInArr(const wchar_t* names[], const wchar_t* name,
 }
 
 bool CAddInNative::PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOutputParameters& out) {
-#define CHECK(func) answer = func;if (!answer.result) lastError = AddInError{ 1, L#func + answer.kod }; return false;
+#define CHECK(func) answer = func;if (!answer.result) {lastError = AddInError{ 1, L#func + answer.kod }; return false;}
 
     pirit_answer answer;
 
@@ -922,12 +933,14 @@ bool CAddInNative::PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOu
     //LOG(PiritKKT.CancelReceipt());
     CHECK(kkt.CloseReceipt());
 
+    //TODO: перенести в конструктор
 	out.CheckNumber = answer.data[0];
 	out.ShiftNumber = answer.data[5];
 	out.ShiftClosingCheckNumber = answer.data[6];
 	out.FiscalSign = answer.data[4];
 	out.DateTime = answer.data[7];
 	out.DateTime += answer.data[8];
+    out.DateTime = _1cv8::ConvertToXMLData(out.DateTime);
     
 
     return true;

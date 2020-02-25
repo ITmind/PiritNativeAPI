@@ -6,6 +6,8 @@ using namespace std;
 //описание структур для native api 1с драйвера
 //https://its.1c.ru/db/metod8dev#content:5970:hdoc
 namespace _1cv8 {
+	wstring ConvertToXMLData(wstring datetime);
+
 	struct CPosition
 	{
 		wstring Name;
@@ -128,6 +130,7 @@ namespace _1cv8 {
 		wstring FiscalSign;
 		wstring DateTime;
 
+		//CDocumentOutputParameters(wstring data);
 		wstring toXML();
 	};
 

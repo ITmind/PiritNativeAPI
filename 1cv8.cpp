@@ -16,6 +16,15 @@ namespace _1cv8 {
 #define ifPARSEto(_struct, name)   if(!wcscmp(attrname, L#name)) _struct.name = attr.value()
 #define elifPARSEto(_struct, name) else ifPARSEto(_struct, name)
 
+    //из формата ƒƒћћ√√чмс (250220143656)
+    //дл€ 2000 годов!
+    wstring ConvertToXMLData(wstring datetime) {
+        wstringstream ss;
+        ss << L"20" << datetime[4] << datetime[5] << "-" << datetime[2] << datetime[3] << "-" << datetime[0] << datetime[1];
+        ss << L"T"  << datetime[6] << datetime[7] << ":" << datetime[8] << datetime[9] << ":" << datetime[10] << datetime[11];
+        return ss.str();
+    }
+
     wstring CDocumentOutputParameters::toXML()
     {
         wstringstream ss;

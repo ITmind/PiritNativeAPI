@@ -125,7 +125,7 @@ PiritPacket CPiritKKT::Send(PiritPacket request)
     // в ответ идут всяекие разные символы. ждем начало пакета или обрыв связи
     do
     {
-        ce::ceSerial::Delay(100);
+        ce::ceSerial::Delay(50);
         c = _com.ReadChar(successFlag); 
         //cout << "c = " << c << " hex = "<< hex << (int)c << "\n";
     } while (c != STX && c!='\x0');
@@ -291,14 +291,19 @@ pirit_answer CPiritKKT::Payment(wstring type, wstring summ)
 //порядок возвращенных параметров соответствует порядку в таблице
 pirit_answer CPiritKKT::GetDataKKT()
 {
-    vector<wstring> commands = { L"1",L"2",L"3",L"4",L"5",L"6",L"7",L"8",L"9",L"10",L"11",L"12",L"14",L"15",L"16",L"17",L"21",L"23",L"24",L"70" };
+    //TODO 10 команда не проходит
+    vector<wstring> commands = { L"1",L"2",L"3",L"4",L"5",L"6",L"7",L"8",L"9" };//, L"10", L"11", L"12", L"14", L"15", L"16", L"17", L"21", L"23", L"24", L"70"};
     vector<wstring> param;
     
     for (wstring num : commands) {
-        PiritPacket request = PiritPacket(L"02", num); //заводской номер
+        vector<wstring> outparam;
+        outparam.push_back(num);
+        outparam.push_back(L"");
+        //outparam.push_back(L"");
+        PiritPacket request = PiritPacket(L"02", outparam); //заводской номер
         PiritPacket answer = Send(request);
         if (answer.error == L"00") {
-            param.push_back(answer.GetData().at(0));
+            param.push_back(answer.GetData().at(1));
         }
         else
         {
