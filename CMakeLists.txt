@@ -14,12 +14,9 @@ SET(AddInNative_SRC
     1cv8.cpp
     )
 
-#SET(CMAKE_CXX_FLAGS "/D_WINDOWS /D_WIN64 /GR /EHsc")
-#set_property(PROPERTY CMAKE_CXX_FLAGS /Df)
-
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_SOURCE_DIR})
+#SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_SOURCE_DIR})
 SET(AddInDef_SRC)
 
 if(NOT BUILD_REVISION)
@@ -34,7 +31,7 @@ if (UNIX)
 	ADD_DEFINITIONS(-D__linux__ )
 else()
     SET(AddInDef_SRC PiritNativeAPI.def)
-    add_definitions(-DUNICODE -D_WIN64)
+    #add_definitions(-DUNICODE -D_WIN64)
     #-DWIN32
 endif()
 
@@ -48,9 +45,9 @@ target_link_libraries(TestConsole PRIVATE KKTPiritLib PUGIXML)
 add_library(PiritNativeAPI SHARED ${AddInNative_SRC} ${AddInDef_SRC})
 target_link_libraries(PiritNativeAPI PRIVATE KKTPiritLib PUGIXML)
 
-install(TARGETS PiritNativeAPI RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
-install(FILES MANIFEST.xml INFO.xml DESTINATION ${CMAKE_SOURCE_DIR}/bin)
-install(SCRIPT pack.cmake)
+#install(TARGETS PiritNativeAPI RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
+#install(FILES MANIFEST.xml INFO.xml DESTINATION ${CMAKE_SOURCE_DIR}/bin)
+#install(SCRIPT pack.cmake)
 #install(CODE "execute_process(COMMAND '${CMAKE_COMMAND}' -E tar cf ${CMAKE_SOURCE_DIR}/bin/abc.zip ${CMAKE_SOURCE_DIR}/bin/info.xml)")
 #SET(CPACK_GENERATOR "ZIP")
 #INCLUDE(CPack)
