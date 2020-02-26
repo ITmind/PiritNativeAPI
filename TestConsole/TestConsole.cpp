@@ -1,11 +1,12 @@
-﻿// ConsoleApplicationС.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿// Консоль для тестирования разного кода
+// 
 
 #include <iostream>
 #include <sstream>
 #include "CPiritKKT.h"
 #include "PiritPacket.h"
 #include "1cv8.h"
+#include "convstring.h"
 
 #define LOG(func) answer = func;\
                   if (answer.result) wcout << #func << L"\n";\
@@ -84,11 +85,18 @@ _1cv8::COutputParameters ShiftClose(CPiritKKT& PiritKKT)
 
 int main()
 {
-    setlocale(LC_ALL, "Russian");
+    setlocale(LC_ALL, "");
     pirit_answer answer;
 
     wcout << L"PIRIT KKT" << L"\n";
     wcout << L"*****************" << L"\n";
+    wcout << L"тест 123 test" << L"\n";
+    
+    wstring wCashierName = L"Тест123test";
+    string CashierName = conv::utf8::convert(wCashierName);
+    string cp866CashierName = conv::unicode::ToCP866(wCashierName);
+    wstring UnicodeCashierName = conv::unicode::FromCP866(cp866CashierName);
+    //auto s2 = CashierName.c_str();
  
     wstring check = LR"delimiter(
 <?xml version="1.0" encoding="UTF-8"?>
@@ -114,26 +122,20 @@ int main()
  </InputParameters>
 )delimiter";
     
-    _1cv8::CInputParameters input(inputxml);
-    _1cv8::CCheckPackage xmlcheck = _1cv8::CCheckPackage(check);
+    wcout << inputxml;
+
+    //_1cv8::CInputParameters input(inputxml);
+    //_1cv8::CCheckPackage xmlcheck = _1cv8::CCheckPackage(check);
      
-    CPiritKKT PiritKKT = CPiritKKT();
+    //CPiritKKT PiritKKT = CPiritKKT();
     //PiritKKT.Connect("COM3");
     //LOG(PiritKKT.StartWork());
     //LOG(PiritKKT.CloseShift());
     //LOG(PiritKKT.OpenShift(utf16to8(input.CashierName)));
     
-    PrintCheck(PiritKKT, xmlcheck);
+    //PrintCheck(PiritKKT, xmlcheck);
 
     //LOG(PiritKKT.StartWork());
-    //LOG(PiritKKT.OpenShift());
-    /*LOG(PiritKKT.OpenReceipt());
-    LOG(PiritKKT.AddGoods("драйвер", "1.0", "1.5"));
-    LOG(PiritKKT.AddGoods("драйвер2", "1.0", "1.5"));
-    LOG(PiritKKT.Subtotal());
-    LOG(PiritKKT.Payment("5", "0"));
-    LOG(PiritKKT.CancelReceipt());*/
-    //LOG(PiritKKT.CloseShift());
 
     return 0;
     

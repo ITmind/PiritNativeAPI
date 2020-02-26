@@ -5,57 +5,12 @@
 #include <sstream>
 #include <iostream>
 #include "convstring.h"
-
-string strconv(wstring _wstring) {
-#if defined(__GNUC__) || defined(__MINGW32__) || defined(__MINGW__)
-    return conv::utf8::convert(_wstring);
-#else
-    return conv::stdlocal::convert(_wstring);
-#endif // DEBUG
-}
-
-wstring strconv(string _string) {
-#if defined(__GNUC__) || defined(__MINGW32__) || defined(__MINGW__)
-    return conv::utf8::convert(_string);
-#else
-    return conv::stdlocal::convert(_string);
-#endif // DEBUG
-}
+#include <algorithm>
 
 CPiritKKT::CPiritKKT()
 {
 }
 
-string strToCP866(string cp1254)
-{
-    string result;
-    for (char c : cp1254) {
-        if (c >= '\xC0' && c <= '\xEF')
-            result += (c - 64);
-        else if (c >= '\xF0' && c <= '\xFF')
-            result += (c - 16);
-        else
-            result += c;
-    }
-
-    return result;
-}
-
-string wstrToCP866(wstring cp1254)
-{
-    string s_cp1254 = strconv(cp1254);
-    string result;
-    for (char c : s_cp1254) {
-        if (c >= '\xC0' && c <= '\xEF')
-            result += (c - 64);
-        else if (c >= '\xF0' && c <= '\xFF')
-            result += (c - 16);
-        else
-            result += c;
-    }
-
-    return result;
-}
 
 string calcCRC(string packet)
 {
@@ -70,7 +25,7 @@ string calcCRC(string packet)
     string temp;
     ss >> temp;
 
-    transform(temp.begin(), temp.end(), temp.begin(), toupper);
+    transform(temp.begin(), temp.end(), temp.begin(), [](unsigned char c) -> unsigned char { return std::toupper(c); });
 
     return temp;
 
@@ -84,7 +39,7 @@ CPiritKKT::~CPiritKKT()
 
 bool CPiritKKT::Connect(wstring wcomport)
 {
-    string comport = strconv(wcomport);
+    string comport = conv::unicode::ToCP866(wcomport);
 #ifdef ceWINDOWS
     _com = ce::ceSerial(comport, 57600, 8, 'N', 1); // Windows
 #else
@@ -112,9 +67,7 @@ void CPiritKKT::Disconnect()
 
 PiritPacket CPiritKKT::Send(PiritPacket request)
 {
-    wstring wreq = request.toStr();
-    //преобразуем в cp866
-    string req = strToCP866(strconv(wreq)); 
+    string req = conv::unicode::ToCP866(request.toStr());
     req += calcCRC(req);
     
     bool successFlag = _com.Write((char*)(req.c_str()));
@@ -149,7 +102,7 @@ PiritPacket CPiritKKT::Send(PiritPacket request)
     c = _com.ReadChar(successFlag); 
     if (successFlag)  answer += c;
 
-    PiritPacket answerPacket = PiritPacket(strconv(answer));
+    PiritPacket answerPacket = PiritPacket(conv::unicode::FromCP866(answer));
     if(answerPacket.CorrespondsTo(request))
         return answerPacket;
 
@@ -158,16 +111,22 @@ PiritPacket CPiritKKT::Send(PiritPacket request)
 
 pirit_answer CPiritKKT::StartWork()
 {
-    errno_t err;
-    time_t t = time(0);   // get time now
-    struct tm now;
-    err = localtime_s(&now, &t);
-
+    
     wstringstream date;
-    date << put_time(&now, L"%d%m%y");
-    wstringstream time;
-    time << put_time(&now, L"%H%M%S");
+    time_t timer = time(0);   // get time now    
+    struct tm* now = 0;
 
+#ifdef _WINDOWS
+    errno_t err = localtime_s(now,&timer);
+#else
+    struct tm buf;
+    now = localtime_r(&timer, &buf);
+    
+#endif // _WINDOWS
+
+    date << put_time(now, L"%d%m%y");
+    wstringstream time;
+    time << put_time(now, L"%H%M%S");
     vector<wstring> data;
     data.push_back(date.str());
     data.push_back(time.str());
