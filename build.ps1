@@ -31,7 +31,7 @@ Function Generate($arch) {
     Write-Output "** GENERATE $arch"
     Write-Output "**************************************************"
     $CMAKE_INSTALL_PREFIX = "$PSScriptRoot\out\install\$arch-Debug"
-    $BUILDPATCH = "$PSScriptRoot\out\$arch-Debug"
+    $BUILDPATCH = "$PSScriptRoot\out\build\$arch-Debug"
     & cmake.exe  -G "Ninja" -DCMAKE_INSTALL_PREFIX:PATH=$CMAKE_INSTALL_PREFIX -DCMAKE_CXX_COMPILER:FILEPATH="cl.exe" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_MAKE_PROGRAM="ninja.exe" -S "$PSScriptRoot" -B $BUILDPATCH
 }
 
