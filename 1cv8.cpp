@@ -1,23 +1,23 @@
-#include "1cv8.h"
+п»ї#include "1cv8.h"
 #include "CPiritKKT.h"
 #include "pugixml.hpp"
 #include <map>
 #include <sstream>
 
-//т.к. 1с работает c wchar_t, то весь код тоже завяжем на это
+//С‚.Рє. 1СЃ СЂР°Р±РѕС‚Р°РµС‚ c wchar_t, С‚Рѕ РІРµСЃСЊ РєРѕРґ С‚РѕР¶Рµ Р·Р°РІСЏР¶РµРј РЅР° СЌС‚Рѕ
 
 namespace _1cv8 {
-#define ADDNODE(name) node = root.append_child(L#name); node.text() = name.c_str()
-#define ADDATTR(node, name) attr = node.append_attribute(L#name); attr.set_value(name.c_str());
+#define ADDNODE(name) node = root.append_child(L###name); node.text() = name.c_str()
+#define ADDATTR(node, name) attr = node.append_attribute(L###name); attr.set_value(name.c_str());
 
-#define ifPARSE(name)   if(!wcscmp(attrname, L#name)) name = attr.value()
+#define ifPARSE(name)   if(!wcscmp(attrname, L###name)) name = attr.value()
 #define elifPARSE(name) else ifPARSE(name)
 
-#define ifPARSEto(_struct, name)   if(!wcscmp(attrname, L#name)) _struct.name = attr.value()
+#define ifPARSEto(_struct, name)   if(!wcscmp(attrname, L###name)) _struct.name = attr.value()
 #define elifPARSEto(_struct, name) else ifPARSEto(_struct, name)
 
-    //из формата ДДММГГчмс (250220143656)
-    //для 2000 годов!
+    //РёР· С„РѕСЂРјР°С‚Р° Р”Р”РњРњР“Р“С‡РјСЃ (250220143656)
+    //РґР»СЏ 2000 РіРѕРґРѕРІ!
     wstring ConvertToXMLData(wstring datetime) {
         wstringstream ss;
         ss << L"20" << datetime[4] << datetime[5] << "-" << datetime[2] << datetime[3] << "-" << datetime[0] << datetime[1];
@@ -33,7 +33,9 @@ namespace _1cv8 {
         pugi::xml_node root = doc.append_child(L"DocumentOutputParameters");
         pugi::xml_node parameters = root.append_child(L"Parameters");
         pugi::xml_attribute attr;
-        ADDATTR(parameters, ShiftNumber);
+        attr = parameters.append_attribute(L"ShiftNumber");
+        attr.set_value(ShiftNumber.c_str());
+        //ADDATTR(parameters, ShiftNumber);
         ADDATTR(parameters, CheckNumber);
         ADDATTR(parameters, ShiftClosingCheckNumber);
         ADDATTR(parameters, FiscalSign);
@@ -255,7 +257,7 @@ namespace _1cv8 {
     CTableParametersKKT::CTableParametersKKT(vector<wstring> fromKKT20command):CTableParametersKKT()
     {
         try {
-            //т.к. пририт возвращает не все, просто запишем любые значения
+            //С‚.Рє. РїСЂРёСЂРёС‚ РІРѕР·РІСЂР°С‰Р°РµС‚ РЅРµ РІСЃРµ, РїСЂРѕСЃС‚Рѕ Р·Р°РїРёС€РµРј Р»СЋР±С‹Рµ Р·РЅР°С‡РµРЅРёСЏ
             KKTNumber = fromKKT20command.at(3);
             KKTSerialNumber = fromKKT20command.at(0);
             FirmwareVersion = fromKKT20command.at(1);
@@ -328,7 +330,7 @@ namespace _1cv8 {
     {
         Name = L"PiritKKT OpenSource driver";
         Description = L"crossplatform driver";
-        EquipmentType = L"ККТ";
+        EquipmentType = L"РљРљРў";
         IntegrationComponent = L"False";
         MainDriverInstalled = L"False";
         DriverVersion = L"0.1";
@@ -363,8 +365,8 @@ namespace _1cv8 {
     {
         Port = L"COM3";
         Speed = L"57600";
-        //parametrs.push_back(CParam(L"Port", L"COM Порт", L"Number", L"3"));
-        //parametrs.push_back(CParam(L"Speed", L"Скорость", L"Number", L"57600"));
+        //parametrs.push_back(CParam(L"Port", L"COM РџРѕСЂС‚", L"Number", L"3"));
+        //parametrs.push_back(CParam(L"Speed", L"РЎРєРѕСЂРѕСЃС‚СЊ", L"Number", L"57600"));
     }
 
     wstring CTableParameters::toXML()
@@ -375,13 +377,13 @@ namespace _1cv8 {
         pugi::xml_attribute attr;
         pugi::xml_node root = doc.append_child(L"Settings");
         pugi::xml_node page = root.append_child(L"Page");
-        wstring Caption = L"Параметры2";
+        wstring Caption = L"РџР°СЂР°РјРµС‚СЂС‹";
         ADDATTR(page, Caption);
         pugi::xml_node paramnode = page.append_child(L"Parameter");
         attr = paramnode.append_attribute(L"Name");
         attr.set_value(L"Port");
         attr = paramnode.append_attribute(L"Caption");
-        attr.set_value(L"COM Порт");
+        attr.set_value(L"COM Port");
         attr = paramnode.append_attribute(L"TypeValue");
         attr.set_value(L"String");
         attr = paramnode.append_attribute(L"DefaultValue");

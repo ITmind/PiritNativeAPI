@@ -86,7 +86,7 @@ public:
     operator IComponentBase*() { return (IComponentBase*)this; }
     // LocaleBase
     virtual void ADDIN_API SetLocale(const WCHAR_T* loc);
-    bool CreateVarFromWchar(tVariant* var, WCHAR* str);
+    bool CreateVarFromWchar(tVariant* var, WCHAR_T* str);
     bool CreateVarFromString(tVariant* var, std::wstring str);
     bool PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOutputParameters &out);
 
@@ -99,7 +99,7 @@ private:
     IAddInDefBase* m_iConnect;
     IMemoryManager* m_iMemory;
 
-    wchar_t* Text;
+    WCHAR_T* Text;
     int8_t Intt;
     CPiritKKT kkt;
     _1cv8::CTableParameters addInParam;

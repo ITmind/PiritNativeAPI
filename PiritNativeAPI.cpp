@@ -1,4 +1,4 @@
-#ifdef __linux__
+п»ї#ifdef __linux__
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -50,35 +50,35 @@ static const wchar_t* g_MethodNames[] = {
 };
 
 static const wchar_t* g_PropNamesRu[] = {
-    L"Текстт",
-    L"Целоее"
+    L"РўРµРєСЃС‚С‚",
+    L"Р¦РµР»РѕРµРµ"
 };
 static const wchar_t* g_MethodNamesRu[] = {
-    L"ПоказатьСообщение",
-    L"ПолучитьПараметрыККТ",
-    L"ОперацияФН",
-    L"ОткрытьСмену",
-    L"ЗакрытьСмену",
-    L"СформироватьЧек",
-    L"СформироватьЧекКоррекции",
-    L"НапечататьТекстовыйДокумент",  
-    L"НапечататьЧекВнесенияВыемки",
-    L"НапечататьОтчетБезГашения",
-    L"НапечататьКопиюЧека",
-    L"ПолучитьТекущееСостояние",
-    L"ОтчетОТекущемСостоянииРасчетов",
-    L"ОткрытьДенежныйЯщик",
-    L"ПолучитьШиринуСтроки",
-    L"ПолучитьРевизиюИнтерфейса",
-    L"ПолучитьОписание",
-    L"ПолучитьОшибку",
-    L"ПолучитьПараметры",
-    L"УстановитьПараметр",
-    L"Подключить",
-    L"Отключить",
-    L"ТестУстройства",
-    L"ПолучитьДополнительныеДействия",
-    L"ВыполнитьДополнительноеДействие"
+    L"РџРѕРєР°Р·Р°С‚СЊРЎРѕРѕР±С‰РµРЅРёРµ",
+    L"РџРѕР»СѓС‡РёС‚СЊРџР°СЂР°РјРµС‚СЂС‹РљРљРў",
+    L"РћРїРµСЂР°С†РёСЏР¤Рќ",
+    L"РћС‚РєСЂС‹С‚СЊРЎРјРµРЅСѓ",
+    L"Р—Р°РєСЂС‹С‚СЊРЎРјРµРЅСѓ",
+    L"РЎС„РѕСЂРјРёСЂРѕРІР°С‚СЊР§РµРє",
+    L"РЎС„РѕСЂРјРёСЂРѕРІР°С‚СЊР§РµРєРљРѕСЂСЂРµРєС†РёРё",
+    L"РќР°РїРµС‡Р°С‚Р°С‚СЊРўРµРєСЃС‚РѕРІС‹Р№Р”РѕРєСѓРјРµРЅС‚",  
+    L"РќР°РїРµС‡Р°С‚Р°С‚СЊР§РµРєР’РЅРµСЃРµРЅРёСЏР’С‹РµРјРєРё",
+    L"РќР°РїРµС‡Р°С‚Р°С‚СЊРћС‚С‡РµС‚Р‘РµР·Р“Р°С€РµРЅРёСЏ",
+    L"РќР°РїРµС‡Р°С‚Р°С‚СЊРљРѕРїРёСЋР§РµРєР°",
+    L"РџРѕР»СѓС‡РёС‚СЊРўРµРєСѓС‰РµРµРЎРѕСЃС‚РѕСЏРЅРёРµ",
+    L"РћС‚С‡РµС‚РћРўРµРєСѓС‰РµРјРЎРѕСЃС‚РѕСЏРЅРёРёР Р°СЃС‡РµС‚РѕРІ",
+    L"РћС‚РєСЂС‹С‚СЊР”РµРЅРµР¶РЅС‹Р№РЇС‰РёРє",
+    L"РџРѕР»СѓС‡РёС‚СЊРЁРёСЂРёРЅСѓРЎС‚СЂРѕРєРё",
+    L"РџРѕР»СѓС‡РёС‚СЊР РµРІРёР·РёСЋРРЅС‚РµСЂС„РµР№СЃР°",
+    L"РџРѕР»СѓС‡РёС‚СЊРћРїРёСЃР°РЅРёРµ",
+    L"РџРѕР»СѓС‡РёС‚СЊРћС€РёР±РєСѓ",
+    L"РџРѕР»СѓС‡РёС‚СЊРџР°СЂР°РјРµС‚СЂС‹",
+    L"РЈСЃС‚Р°РЅРѕРІРёС‚СЊРџР°СЂР°РјРµС‚СЂ",
+    L"РџРѕРґРєР»СЋС‡РёС‚СЊ",
+    L"РћС‚РєР»СЋС‡РёС‚СЊ",
+    L"РўРµСЃС‚РЈСЃС‚СЂРѕР№СЃС‚РІР°",
+    L"РџРѕР»СѓС‡РёС‚СЊР”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹РµР”РµР№СЃС‚РІРёСЏ",
+    L"Р’С‹РїРѕР»РЅРёС‚СЊР”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРµР”РµР№СЃС‚РІРёРµ"
 };
 
 static const wchar_t g_kClassNames[] = L"CAddInNative"; //|OtherClass1|OtherClass2";
@@ -86,6 +86,7 @@ static AppCapabilities g_capabilities = eAppCapabilitiesInvalid;
 
 uint32_t convToShortWchar(WCHAR_T** Dest, const wchar_t* Source, uint32_t len = 0);
 uint32_t convFromShortWchar(wchar_t** Dest, const WCHAR_T* Source, uint32_t len = 0);
+uint32_t copyWCHAR_T(WCHAR_T** Dest, const WCHAR_T* Source, uint32_t len = 0);
 uint32_t getLenShortWcharStr(const WCHAR_T* Source);
 
 //---------------------------------------------------------------------------//
@@ -129,8 +130,8 @@ CAddInNative::CAddInNative()
 {
     m_iMemory = 0;
     m_iConnect = 0;
-    Text = nullptr;
-    ::convFromShortWchar(&Text, L"heelo");
+    convToShortWchar(&Text,L"heelo");
+    //::convFromShortWchar(&Text, L"heelo");
     Intt = 5;
     addInParam = _1cv8::CTableParameters();
    /* FILE* fd = fopen("c:\\temp\\com.txt", "w+");
@@ -139,7 +140,7 @@ CAddInNative::CAddInNative()
         fwrite(&buf, sizeof(char), 9, fd);
         fclose(fd);
     }*/
-    lastError = AddInError{ 0, L"нет ошибок" };
+    lastError = AddInError{ 0, L"РЅРµС‚ РѕС€РёР±РѕРє" };
     kkt = CPiritKKT();
 
 
@@ -233,11 +234,11 @@ const WCHAR_T* CAddInNative::GetPropName(long lPropNum, long lPropAlias)
     return wsPropName;
 }
 //---------------------------------------------------------------------------//
-bool CAddInNative::CreateVarFromWchar(tVariant* var, WCHAR* str) {
-    uint32_t iActualSize = wcslen(str);
+bool CAddInNative::CreateVarFromWchar(tVariant* var, WCHAR_T* str) {
+    uint32_t iActualSize = getLenShortWcharStr(str) + 1;
     if (m_iMemory->AllocMemory((void**)&var->pwstrVal, iActualSize * sizeof(WCHAR_T)))
     {
-        convToShortWchar(&var->pwstrVal, str, iActualSize);
+        copyWCHAR_T(&var->pwstrVal, str, iActualSize);
         var->wstrLen = iActualSize;
         TV_VT(var) = VTYPE_PWSTR;
         return true;
@@ -248,7 +249,8 @@ bool CAddInNative::CreateVarFromWchar(tVariant* var, WCHAR* str) {
 bool CAddInNative::CreateVarFromString(tVariant* var, wstring str) {
     //WCHAR* wstr = new WCHAR[str.length()];
     //mbtowc(wstr, str.c_str(), str.length());
-    WCHAR* wstr = (WCHAR *)str.c_str();
+    WCHAR_T* wstr = nullptr;
+    convToShortWchar(&wstr, str.c_str());
     return CAddInNative::CreateVarFromWchar(var, wstr);
 }
 
@@ -291,7 +293,7 @@ bool CAddInNative::SetPropVal(const long lPropNum, tVariant* varPropVal)
         if (TV_VT(varPropVal) != VTYPE_PWSTR)
             return false;
         //Text = TV_WSTR(varPropVal);
-        convFromShortWchar(&Text, TV_WSTR(varPropVal));
+        copyWCHAR_T(&Text, TV_WSTR(varPropVal));
         return true;
     case eInt:
         if (TV_VT(varPropVal) != VTYPE_I4)
@@ -456,7 +458,7 @@ bool CAddInNative::CallAsProc(const long lMethodNum,
             IMsgBox* imsgbox = (IMsgBox*)cnn->GetInterface(eIMsgBox);
             if (imsgbox)
             {
-                imsgbox->Alert(L"alert");
+                //imsgbox->Alert(L"alert");
             }
         }
         return true;
@@ -498,7 +500,7 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
     return true;
     case eOperationFN:
     {
-        //ничего не будем делать
+        //РЅРёС‡РµРіРѕ РЅРµ Р±СѓРґРµРј РґРµР»Р°С‚СЊ
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = true;
     }
@@ -509,7 +511,13 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
             return false;
         auto paParams2 = paParams + 1;
         auto paParams3 = paParams + 2;
-        _1cv8::CInputParameters inputParam(TV_WSTR(paParams2));
+        
+        //РёР·-Р·Р° СЂР°Р·РЅРѕРіРѕ СЂР°Р·РјРµСЂР° wchar_t (wstring) РІ Linux (4 Р±Р°Р№С‚Р°) Рё Windows (2 Р±Р°Р№С‚Р°) РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРёРІРѕРґРёС‚СЊ РІРѕР·РІСЂР°С‚ 1СЃ (2 Р±Р°Р№С‚Р°) РІ РЅР°С‚РёРІРЅСѓСЋ СЂР°Р·СЂСЏРґРЅРѕСЃС‚СЊ
+        wchar_t* wParam = nullptr;
+        convFromShortWchar(&wParam, TV_WSTR(paParams2));
+        _1cv8::CInputParameters inputParam(wParam);
+        delete wParam;
+
         auto kkt_data = kkt.OpenShift(inputParam.CashierName);
         if (!kkt_data.result) {
             lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
@@ -530,7 +538,12 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
             return false;
         auto paParams2 = paParams + 1;
         auto paParams3 = paParams + 2;
-        _1cv8::CInputParameters inputParam(TV_WSTR(paParams2));
+
+        wchar_t* wParam = nullptr;
+        convFromShortWchar(&wParam, TV_WSTR(paParams2));
+        _1cv8::CInputParameters inputParam(wParam);
+        delete wParam;
+
         auto kkt_data = kkt.CloseShift(inputParam.CashierName);
         if (!kkt_data.result) {
             lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
@@ -554,7 +567,10 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         auto paParams3 = paParams + 2;
         auto paParams4 = paParams + 3;
 
-        _1cv8::CCheckPackage inputParam(TV_WSTR(paParams3));
+        wchar_t* wParam = nullptr;
+        convFromShortWchar(&wParam, TV_WSTR(paParams3));
+        _1cv8::CCheckPackage inputParam(wParam);
+        delete wParam;
         
         _1cv8::CDocumentOutputParameters out = _1cv8::CDocumentOutputParameters();
         bool result = PrintCheck(inputParam, out);
@@ -607,8 +623,13 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
             return false;
         auto paParams2 = paParams + 1;
         auto paParams3 = paParams + 2;
-        _1cv8::CInputParameters inputParam(TV_WSTR(paParams2));
-        //TODO: необходимо получать номер смены и номер чека
+
+        wchar_t* wParam = nullptr;
+        convFromShortWchar(&wParam, TV_WSTR(paParams2));
+        _1cv8::CInputParameters inputParam(wParam);
+        delete wParam;
+
+        //TODO: РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡Р°С‚СЊ РЅРѕРјРµСЂ СЃРјРµРЅС‹ Рё РЅРѕРјРµСЂ С‡РµРєР°
         _1cv8::COutputParameters outtable = _1cv8::COutputParameters();
         CreateVarFromString(paParams3, outtable.toXML());
 
@@ -678,10 +699,20 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
     {
         if (lSizeArray != 2 || !paParams)
             return false;
-        wstring paramName = TV_WSTR(paParams);
+
         tVariant* paramVal = paParams + 1;
+
+        wchar_t* wParam = nullptr;
+        convFromShortWchar(&wParam, TV_WSTR(paParams));
+        wstring paramName = wParam;
+        convFromShortWchar(&wParam, TV_WSTR(paramVal));
+        wstring wparamVal = wParam;
+        delete wParam;
+
+        //wstring paramName = TV_WSTR(paParams);
+        
         if (paramName == L"Port") {
-            addInParam.Port = TV_WSTR(paramVal);
+            addInParam.Port = wparamVal;
         }
         /* for (_1cv8::CParam param: addInParam.parametrs)
          {
@@ -725,7 +756,7 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         if (lSizeArray != 2 || !paParams)
             return false;
 
-        CreateVarFromString(paParams, L"Устройство подключено");
+        CreateVarFromString(paParams, L"РЈСЃС‚СЂРѕР№СЃС‚РІРѕ РїРѕРґРєР»СЋС‡РµРЅРѕ");
         CreateVarFromString(paParams + 1, L"");
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
@@ -740,7 +771,7 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
 
         CreateVarFromString(paParams, LR"delimiter(<?xml version="1.0" encoding="UTF-8"?>
  <Actions>
-      <Action Name="TestSetting" Caption="Тестовая копка"/> 
+      <Action Name="TestSetting" Caption="РўРµСЃС‚РѕРІР°СЏ РєРѕРїРєР°"/> 
  </Actions>)delimiter");
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
@@ -842,6 +873,28 @@ uint32_t convFromShortWchar(wchar_t** Dest, const WCHAR_T* Source, uint32_t len)
 
     return res;
 }
+
+uint32_t copyWCHAR_T(WCHAR_T** Dest, const WCHAR_T* Source, uint32_t len)
+{
+    if (!len)
+        len = getLenShortWcharStr(Source) + 1;
+
+    if (!*Dest)
+        *Dest = new WCHAR_T[len];
+
+    WCHAR_T* tmpWChar = *Dest;
+    WCHAR_T* tmpShort = (WCHAR_T*)Source;
+    uint32_t res = 0;
+
+    ::memset(*Dest, 0, len * sizeof(WCHAR_T));
+    do
+    {
+        *tmpWChar++ = (WCHAR_T)*tmpShort++;
+        ++res;
+    } while (len-- && *tmpShort);
+
+    return res;
+}
 //---------------------------------------------------------------------------//
 uint32_t getLenShortWcharStr(const WCHAR_T* Source)
 {
@@ -888,15 +941,15 @@ long CAddInNative::getIndexInArr(const wchar_t* names[], const wchar_t* name,
 }
 
 bool CAddInNative::PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOutputParameters& out) {
-#define CHECK(func) answer = func;if (!answer.result) {lastError = AddInError{ 1, L#func + answer.kod }; return false;}
+#define CHECK(func) answer = func;if (!answer.result) {lastError = AddInError{ 1, L###func + answer.kod }; return false;}
 
     pirit_answer answer;
 
     wstring operationType;
-    if (xmlcheck.OperationType == L"1") operationType = L"2"; //чек на продажу
-    else if (xmlcheck.OperationType == L"2") operationType = L"3"; //чек на продажу (возврат)
-    else if (xmlcheck.OperationType == L"3") operationType = L"6"; //расход ДС
-    else if (xmlcheck.OperationType == L"4") operationType = L"7"; //расход ДС (возврат)
+    if (xmlcheck.OperationType == L"1") operationType = L"2"; //С‡РµРє РЅР° РїСЂРѕРґР°Р¶Сѓ
+    else if (xmlcheck.OperationType == L"2") operationType = L"3"; //С‡РµРє РЅР° РїСЂРѕРґР°Р¶Сѓ (РІРѕР·РІСЂР°С‚)
+    else if (xmlcheck.OperationType == L"3") operationType = L"6"; //СЂР°СЃС…РѕРґ Р”РЎ
+    else if (xmlcheck.OperationType == L"4") operationType = L"7"; //СЂР°СЃС…РѕРґ Р”РЎ (РІРѕР·РІСЂР°С‚)
 
     CHECK(kkt.OpenReceipt(operationType, xmlcheck.TaxationSystem, xmlcheck.CashierName));
 
@@ -914,11 +967,11 @@ bool CAddInNative::PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOu
     }
 
     CHECK(kkt.Subtotal());
-    //0 - наличные
-    //1 - безналичные
-    //13 - аванс
-    //14 - кредит
-    //15 - иная
+    //0 - РЅР°Р»РёС‡РЅС‹Рµ
+    //1 - Р±РµР·РЅР°Р»РёС‡РЅС‹Рµ
+    //13 - Р°РІР°РЅСЃ
+    //14 - РєСЂРµРґРёС‚
+    //15 - РёРЅР°СЏ
     if (xmlcheck.Payments.Cash != L"0")
         CHECK(kkt.Payment(L"0", xmlcheck.Payments.Cash));
     if (xmlcheck.Payments.ElectronicPayment != L"0")
@@ -933,7 +986,7 @@ bool CAddInNative::PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOu
     //LOG(PiritKKT.CancelReceipt());
     CHECK(kkt.CloseReceipt());
 
-    //TODO: перенести в конструктор
+    //TODO: РїРµСЂРµРЅРµСЃС‚Рё РІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 	out.CheckNumber = answer.data[0];
 	out.ShiftNumber = answer.data[5];
 	out.ShiftClosingCheckNumber = answer.data[6];
@@ -942,6 +995,5 @@ bool CAddInNative::PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOu
 	out.DateTime += answer.data[8];
     out.DateTime = _1cv8::ConvertToXMLData(out.DateTime);
     
-
     return true;
 }

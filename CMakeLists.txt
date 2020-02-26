@@ -1,10 +1,14 @@
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.15)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
 PROJECT(PiritNativeAPI VERSION 0.1 LANGUAGES CXX)
 
 if(NOT CMAKE_CXX_EXTENSIONS)
     set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
+
+if (UNIX)
+    SET(CMAKE_CXX_FLAGS  "-fPIC -D__STRICT_ANSI__")
 endif()
 
 SET(AddInNative_SRC 
@@ -28,11 +32,9 @@ endif()
 add_definitions(-DBUILD_REVISION=${BUILD_REVISION})
 
 if (UNIX)
-	ADD_DEFINITIONS(-D__linux__ )
+	ADD_DEFINITIONS(-D__linux__ -Dunix)
 else()
     SET(AddInDef_SRC PiritNativeAPI.def)
-    #add_definitions(-DUNICODE -D_WIN64)
-    #-DWIN32
 endif()
 
 add_subdirectory(KKTPiritLib)
