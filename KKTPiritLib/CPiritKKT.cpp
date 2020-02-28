@@ -114,7 +114,7 @@ pirit_answer CPiritKKT::StartWork()
     
     wstringstream date;
     time_t timer = time(0);   // get time now    
-    struct tm* now = 0;
+    struct tm* now = new tm();
 
 #ifdef _WINDOWS
     errno_t err = localtime_s(now,&timer);

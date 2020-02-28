@@ -111,7 +111,7 @@ int main()
     wcout << L"PIRIT KKT" << L"\n";
     wcout << L"*****************" << L"\n";
     wcout << L"enter COM port: "<< comname << L"\n";
-    //wcin >> comname;
+    wcin >> comname;
     wcout << "COM is " << comname << L"\n";
     wstring wCashierName = L"Тест123test";
     string CashierName = conv::utf8::convert(wCashierName);
