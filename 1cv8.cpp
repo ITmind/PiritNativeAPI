@@ -334,7 +334,7 @@ namespace _1cv8 {
         IntegrationComponent = L"False";
         MainDriverInstalled = L"False";
         DriverVersion = L"0.1";
-        IntegrationComponentVersion = L"0.0.1.2";
+        IntegrationComponentVersion = L"0.0.2.0";
         DownloadURL = L"www.github.com";
         LogIsEnabled = L"False";
         LogPath = L"";
