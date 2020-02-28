@@ -40,7 +40,7 @@ function Build($arch) {
     Write-Output "**************************************************"
     Write-Output "** BUILD $arch"
     Write-Output "**************************************************"
-    $BUILDPATCH = "$PSScriptRoot\out\$arch-Debug"
+    $BUILDPATCH = "$PSScriptRoot\out\build\$arch-Debug"
     & cmake --build $BUILDPATCH
     Copy-Item "$BUILDPATCH\PiritNativeAPI.dll" "$BINDIR\PiritNativeAPI$arch.dll"
     #xcopy PiritNativeAPI.dll %BINDIR%\PiritNativeAPI%ARCH%.dll /i /y   
