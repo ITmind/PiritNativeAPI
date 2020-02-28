@@ -9,11 +9,31 @@
 #include "convstring.h"
 
 #define LOG(func) answer = func;\
-                  if (answer.result) wcout << #func << L"\n";\
-                  else {wcout << #func << L" error: " << answer.kod << L"\n"; return 0;}
+                  if (answer.result) wcout << L###func << L"\n";\
+                  else {wcout << L###func << L" error: " << answer.kod << L"\n"; return 0;}
 
-bool PrintCheck(CPiritKKT& PiritKKT, _1cv8::CCheckPackage xmlcheck) {
+bool PrintCheck(CPiritKKT& PiritKKT) {
     pirit_answer answer;
+
+    wstring check = LR"delimiter(
+<?xml version="1.0" encoding="UTF-8"?>
+<CheckPackage>
+	<Parameters OperationType="1" TaxationSystem="0" CashierName="Печенкина М. В." CustomerEmail="" CustomerPhone="">
+		<AgentData/>
+		<PurveyorData/>
+	</Parameters>
+	<Positions>
+		<FiscalString Name="Тачка строительная Кратон WB-180H" Quantity="1" PriceWithDiscount="3720.08" AmountWithDiscount="3720.08" DiscountAmount="0" Department="1" VATRate="18/118" PaymentMethod="1" CalculationSubject="10"  VATAmount="620.01"/>
+		<FiscalString Name="Тачка строительная Кратон WB-180H" Quantity="1" PriceWithDiscount="1860.05" AmountWithDiscount="1860.05" DiscountAmount="0" Department="1" VATRate="18/118" PaymentMethod="1" CalculationSubject="10"  VATAmount="310.01"/>
+		<FiscalString Name="Тачка строительная Кратон WB-180DH" Quantity="1" PriceWithDiscount="2347.5" AmountWithDiscount="2347.5" DiscountAmount="0" Department="1" VATRate="18/118" PaymentMethod="1"  CalculationSubject="10"  VATAmount="391.25"/>
+		<FiscalString Name="Тачка строительная Кратон WB-180DH" Quantity="1" PriceWithDiscount="2347.49" AmountWithDiscount="2347.49" DiscountAmount="0" Department="1" VATRate="18/118" PaymentMethod="1" CalculationSubject="10" VATAmount="391.25"/>
+	</Positions>
+	<Payments Cash="10275.12" ElectronicPayment="0" PostPayment="0" PrePayment="0" Barter="0"/>
+</CheckPackage>
+)delimiter";
+
+    //_1cv8::CInputParameters input(inputxml);
+    _1cv8::CCheckPackage xmlcheck = _1cv8::CCheckPackage(check);
 
     wstring operationType; 
     if (xmlcheck.OperationType == L"1") operationType = L"2"; //чек на продажу
@@ -86,56 +106,27 @@ _1cv8::COutputParameters ShiftClose(CPiritKKT& PiritKKT)
 int main()
 {
     setlocale(LC_ALL, "");
-    pirit_answer answer;
-
+    
+    wstring comname = L"/dev/ttyS0";
     wcout << L"PIRIT KKT" << L"\n";
     wcout << L"*****************" << L"\n";
-    wcout << L"тест 123 test" << L"\n";
-    
+    wcout << L"enter COM port: "<< comname << L"\n";
+    //wcin >> comname;
+    wcout << "COM is " << comname << L"\n";
     wstring wCashierName = L"Тест123test";
     string CashierName = conv::utf8::convert(wCashierName);
     string cp866CashierName = conv::unicode::ToCP866(wCashierName);
     wstring UnicodeCashierName = conv::unicode::FromCP866(cp866CashierName);
-    //auto s2 = CashierName.c_str();
- 
-    wstring check = LR"delimiter(
-<?xml version="1.0" encoding="UTF-8"?>
-<CheckPackage>
-	<Parameters OperationType="1" TaxationSystem="0" CashierName="Печенкина М. В." CustomerEmail="" CustomerPhone="">
-		<AgentData/>
-		<PurveyorData/>
-	</Parameters>
-	<Positions>
-		<FiscalString Name="Тачка строительная Кратон WB-180H" Quantity="1" PriceWithDiscount="3720.08" AmountWithDiscount="3720.08" DiscountAmount="0" Department="1" VATRate="18/118" PaymentMethod="1" CalculationSubject="10"  VATAmount="620.01"/>
-		<FiscalString Name="Тачка строительная Кратон WB-180H" Quantity="1" PriceWithDiscount="1860.05" AmountWithDiscount="1860.05" DiscountAmount="0" Department="1" VATRate="18/118" PaymentMethod="1" CalculationSubject="10"  VATAmount="310.01"/>
-		<FiscalString Name="Тачка строительная Кратон WB-180DH" Quantity="1" PriceWithDiscount="2347.5" AmountWithDiscount="2347.5" DiscountAmount="0" Department="1" VATRate="18/118" PaymentMethod="1"  CalculationSubject="10"  VATAmount="391.25"/>
-		<FiscalString Name="Тачка строительная Кратон WB-180DH" Quantity="1" PriceWithDiscount="2347.49" AmountWithDiscount="2347.49" DiscountAmount="0" Department="1" VATRate="18/118" PaymentMethod="1" CalculationSubject="10" VATAmount="391.25"/>
-	</Positions>
-	<Payments Cash="10275.12" ElectronicPayment="0" PostPayment="0" PrePayment="0" Barter="0"/>
-</CheckPackage>
-)delimiter";
-
-    wstring inputxml = LR"delimiter(
- <?xml version="1.0" encoding="UTF-8"?>
- <InputParameters> 
-	<Parameters CashierName="Иванов И.П." CashierINN="32456234523452"/>
- </InputParameters>
-)delimiter";
     
-    wcout << inputxml;
-
     //_1cv8::CInputParameters input(inputxml);
-    //_1cv8::CCheckPackage xmlcheck = _1cv8::CCheckPackage(check);
-     
-    //CPiritKKT PiritKKT = CPiritKKT();
-    //PiritKKT.Connect("COM3");
-    //LOG(PiritKKT.StartWork());
-    //LOG(PiritKKT.CloseShift());
-    //LOG(PiritKKT.OpenShift(utf16to8(input.CashierName)));
+    pirit_answer answer;
+    CPiritKKT PiritKKT = CPiritKKT();
+    PiritKKT.Connect(comname);
+    LOG(PiritKKT.StartWork());
     
+    //LOG(PiritKKT.OpenShift(L"Иванов И.П."));    
     //PrintCheck(PiritKKT, xmlcheck);
-
-    //LOG(PiritKKT.StartWork());
+    //LOG(PiritKKT.CloseShift());
 
     return 0;
     

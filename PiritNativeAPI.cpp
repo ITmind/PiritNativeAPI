@@ -90,8 +90,19 @@ uint32_t copyWCHAR_T(WCHAR_T** Dest, const WCHAR_T* Source, uint32_t len = 0);
 uint32_t getLenShortWcharStr(const WCHAR_T* Source);
 
 //---------------------------------------------------------------------------//
-long GetClassObject(const wchar_t* wsName, IComponentBase** pInterface)
+long GetClassObject(const WCHAR_T * wsName, IComponentBase ** pInterface)
 {
+
+#ifdef linux
+    FILE* fd = fopen("/home/hatter/com.txt", "a+");
+    if (fd != 0) {
+        const char* buf = "GetClassObject";
+        fwrite(&buf, sizeof(char), strlen(buf), fd);
+        fclose(fd);
+    }
+#endif // linux
+
+    
     if(!*pInterface)
     {
         *pInterface= new CAddInNative();
@@ -102,6 +113,15 @@ long GetClassObject(const wchar_t* wsName, IComponentBase** pInterface)
 //---------------------------------------------------------------------------//
 long DestroyObject(IComponentBase** pIntf)
 {
+#ifdef linux
+    FILE* fd = fopen("/home/hatter/com.txt", "a+");
+    if (fd != 0) {
+        const char* buf = "DestroyObject";
+        fwrite(&buf, sizeof(char), strlen(buf), fd);
+        fclose(fd);
+    }
+#endif // linux
+
    if(!*pIntf)
       return -1;
 
@@ -112,6 +132,14 @@ long DestroyObject(IComponentBase** pIntf)
 //---------------------------------------------------------------------------//
 const WCHAR_T* GetClassNames()
 {
+#ifdef linux
+    FILE* fd = fopen("/home/hatter/com.txt", "a+");
+    if (fd != 0) {
+        const char* buf = "GetClassNames";
+        fwrite(&buf, sizeof(char), strlen(buf), fd);
+        fclose(fd);
+    }
+#endif // linux
     static WCHAR_T* names = 0;
     if (!names)
         ::convToShortWchar(&names, g_kClassNames);
@@ -128,8 +156,17 @@ AppCapabilities SetPlatformCapabilities(const AppCapabilities capabilities)
 //CAddInNative
 CAddInNative::CAddInNative()
 {
+#ifdef linux
+    FILE* fd = fopen("/home/hatter/com.txt", "a+");
+    if (fd != 0) {
+        const char* buf = "CAddInNative";
+        fwrite(&buf, sizeof(char), strlen(buf), fd);
+        fclose(fd);
+    }
+#endif // linux
     m_iMemory = 0;
     m_iConnect = 0;
+    Text = 0;
     convToShortWchar(&Text,L"heelo");
     //::convFromShortWchar(&Text, L"heelo");
     Intt = 5;
@@ -235,11 +272,11 @@ const WCHAR_T* CAddInNative::GetPropName(long lPropNum, long lPropAlias)
 }
 //---------------------------------------------------------------------------//
 bool CAddInNative::CreateVarFromWchar(tVariant* var, WCHAR_T* str) {
-    uint32_t iActualSize = getLenShortWcharStr(str) + 1;
+    uint32_t iActualSize = getLenShortWcharStr(str)+1;
     if (m_iMemory->AllocMemory((void**)&var->pwstrVal, iActualSize * sizeof(WCHAR_T)))
     {
         copyWCHAR_T(&var->pwstrVal, str, iActualSize);
-        var->wstrLen = iActualSize;
+        var->wstrLen = iActualSize-1; //не учитываем терминальный символ
         TV_VT(var) = VTYPE_PWSTR;
         return true;
     }
