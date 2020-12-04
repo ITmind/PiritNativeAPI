@@ -107,22 +107,33 @@ int main()
 {
     setlocale(LC_ALL, "");
     
-    wstring comname = L"/dev/ttyS0";
+    wstring str = L"012345678912345";
+    wcout << L"resize " << str << L"\n";
+    //size_t SkokaRezat = (10) < (str.size()) ? 10 : str.size();
+    //str.resize(SkokaRezat);
+    wstring res = str.substr(0, 20);
+    //str.resize(10);
+    wcout << L" size = " << res.size() << L"\n";
+    wcout << L"result " << res;
+    
+
+
+    /*wstring comname = L"/dev/ttyS0";
     wcout << L"PIRIT KKT" << L"\n";
     wcout << L"*****************" << L"\n";
     wcout << L"enter COM port: "<< comname << L"\n";
     wcin >> comname;
-    wcout << "COM is " << comname << L"\n";
-    wstring wCashierName = L"Тест123test";
+    wcout << "COM is " << comname << L"\n";*/
+    /*wstring wCashierName = L"Тест123test";
     string CashierName = conv::utf8::convert(wCashierName);
     string cp866CashierName = conv::unicode::ToCP866(wCashierName);
-    wstring UnicodeCashierName = conv::unicode::FromCP866(cp866CashierName);
+    wstring UnicodeCashierName = conv::unicode::FromCP866(cp866CashierName);*/
     
     //_1cv8::CInputParameters input(inputxml);
-    pirit_answer answer;
+    /*pirit_answer answer;
     CPiritKKT PiritKKT = CPiritKKT();
     PiritKKT.Connect(comname);
-    LOG(PiritKKT.StartWork());
+    LOG(PiritKKT.StartWork());*/
     
     //LOG(PiritKKT.OpenShift(L"Иванов И.П."));    
     //PrintCheck(PiritKKT, xmlcheck);

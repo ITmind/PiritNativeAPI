@@ -18,8 +18,10 @@
 #define DEVICEID L"device1"
 
 static const wchar_t* g_PropNames[] = {
-    L"Textt",
-    L"Intt",
+    L"Port",
+    L"Speed",
+    L"WriteLog",
+    L"LogFileName"
 };
 static const wchar_t* g_MethodNames[] = {
     L"ShowMsgBox",
@@ -50,8 +52,10 @@ static const wchar_t* g_MethodNames[] = {
 };
 
 static const wchar_t* g_PropNamesRu[] = {
-    L"Текстт",
-    L"Целоее"
+    L"Порт",
+    L"Скорость",
+    L"ПисатьЛог",
+    L"ИмяФайла"
 };
 static const wchar_t* g_MethodNamesRu[] = {
     L"ПоказатьСообщение",
@@ -91,18 +95,7 @@ uint32_t getLenShortWcharStr(const WCHAR_T* Source);
 
 //---------------------------------------------------------------------------//
 long GetClassObject(const WCHAR_T * wsName, IComponentBase ** pInterface)
-{
-
-#ifdef linux
-    FILE* fd = fopen("/home/hatter/com.txt", "a+");
-    if (fd != 0) {
-        const char* buf = "GetClassObject";
-        fwrite(&buf, sizeof(char), strlen(buf), fd);
-        fclose(fd);
-    }
-#endif // linux
-
-    
+{   
     if(!*pInterface)
     {
         *pInterface= new CAddInNative();
@@ -113,15 +106,6 @@ long GetClassObject(const WCHAR_T * wsName, IComponentBase ** pInterface)
 //---------------------------------------------------------------------------//
 long DestroyObject(IComponentBase** pIntf)
 {
-#ifdef linux
-    FILE* fd = fopen("/home/hatter/com.txt", "a+");
-    if (fd != 0) {
-        const char* buf = "DestroyObject";
-        fwrite(&buf, sizeof(char), strlen(buf), fd);
-        fclose(fd);
-    }
-#endif // linux
-
    if(!*pIntf)
       return -1;
 
@@ -132,14 +116,6 @@ long DestroyObject(IComponentBase** pIntf)
 //---------------------------------------------------------------------------//
 const WCHAR_T* GetClassNames()
 {
-#ifdef linux
-    FILE* fd = fopen("/home/hatter/com.txt", "a+");
-    if (fd != 0) {
-        const char* buf = "GetClassNames";
-        fwrite(&buf, sizeof(char), strlen(buf), fd);
-        fclose(fd);
-    }
-#endif // linux
     static WCHAR_T* names = 0;
     if (!names)
         ::convToShortWchar(&names, g_kClassNames);
@@ -156,30 +132,11 @@ AppCapabilities SetPlatformCapabilities(const AppCapabilities capabilities)
 //CAddInNative
 CAddInNative::CAddInNative()
 {
-#ifdef linux
-    FILE* fd = fopen("/home/hatter/com.txt", "a+");
-    if (fd != 0) {
-        const char* buf = "CAddInNative";
-        fwrite(&buf, sizeof(char), strlen(buf), fd);
-        fclose(fd);
-    }
-#endif // linux
+
     m_iMemory = 0;
     m_iConnect = 0;
-    Text = 0;
-    convToShortWchar(&Text,L"heelo");
-    //::convFromShortWchar(&Text, L"heelo");
-    Intt = 5;
     addInParam = _1cv8::CTableParameters();
-   /* FILE* fd = fopen("c:\\temp\\com.txt", "w+");
-    if (fd != 0) {
-        char buf[10] = "012345678";
-        fwrite(&buf, sizeof(char), 9, fd);
-        fclose(fd);
-    }*/
     lastError = AddInError{ 0, L"нет ошибок" };
-    kkt = CPiritKKT();
-
 
 }
 //---------------------------------------------------------------------------//
@@ -284,8 +241,6 @@ bool CAddInNative::CreateVarFromWchar(tVariant* var, WCHAR_T* str) {
 }
 
 bool CAddInNative::CreateVarFromString(tVariant* var, wstring str) {
-    //WCHAR* wstr = new WCHAR[str.length()];
-    //mbtowc(wstr, str.c_str(), str.length());
     WCHAR_T* wstr = nullptr;
     convToShortWchar(&wstr, str.c_str());
     return CAddInNative::CreateVarFromWchar(var, wstr);
@@ -295,25 +250,16 @@ bool CAddInNative::GetPropVal(const long lPropNum, tVariant* pvarPropVal)
 { 
     switch (lPropNum)
     {
-    case eText: {
-        return CreateVarFromWchar(pvarPropVal, Text);
-        /*uint32_t iActualSize = wcslen(Text);
-        if (m_iMemory->AllocMemory((void**)&pvarPropVal->pwstrVal, iActualSize * sizeof(WCHAR_T)))
-        {
-            convToShortWchar(&pvarPropVal->pwstrVal, Text, iActualSize);
-            pvarPropVal->wstrLen = iActualSize;
-            TV_VT(pvarPropVal) = VTYPE_PWSTR;
-            return true;
-        }
+    /*case ePort: {
+        return CreateVarFromWchar(pvarPropVal, L"test");
 
-        return true;*/
-    }
-    case eInt:
+    }*/
+    /*case eInt:
         
         TV_VT(pvarPropVal) = VTYPE_I4;
         TV_I1(pvarPropVal) = Intt;
 
-        return true;
+        return true;*/
 
     default:
         return false;
@@ -326,17 +272,17 @@ bool CAddInNative::SetPropVal(const long lPropNum, tVariant* varPropVal)
 { 
     switch (lPropNum)
     {
-    case eText:
+    case ePort:
         if (TV_VT(varPropVal) != VTYPE_PWSTR)
             return false;
         //Text = TV_WSTR(varPropVal);
-        copyWCHAR_T(&Text, TV_WSTR(varPropVal));
+        //copyWCHAR_T(&Text, TV_WSTR(varPropVal));
         return true;
-    case eInt:
+    /*case eInt:
         if (TV_VT(varPropVal) != VTYPE_I4)
             return false;
         Intt = TV_I1(varPropVal);
-        return true;
+        return true;*/
     default:
         return false;
     }
@@ -518,17 +464,23 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
             return false;
         }
 
-        auto kkt_data = kkt.GetDataKKT();
+        /*auto kkt_data = kkt.GetDataKKT();
         if (!kkt_data.result) {
             lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
             TV_VT(pvarRetValue) = VTYPE_BOOL;
             TV_BOOL(pvarRetValue) = false;
             return true;
         }
-        _1cv8::CTableParametersKKT outtable(kkt_data.data);
+        _1cv8::CTableParametersKKT outtable(kkt_data.data);*/
+        _1cv8::CTableParametersKKT outtable = _1cv8::CTableParametersKKT();
+        auto result = outtable.toXML();
+        if (kkt.toFile) {
+            kkt.Log("eGetDataKKT");
+            kkt.Log(result);
+        }
 
         tVariant* outParams = paParams + 1;
-        CreateVarFromString(outParams, outtable.toXML());
+        CreateVarFromString(outParams, result);
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = true;
@@ -538,6 +490,9 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
     case eOperationFN:
     {
         //ничего не будем делать
+        if (kkt.toFile) {
+            kkt.Log("eOperationFN");
+        }
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = true;
     }
@@ -553,9 +508,24 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         wchar_t* wParam = nullptr;
         convFromShortWchar(&wParam, TV_WSTR(paParams2));
         _1cv8::CInputParameters inputParam(wParam);
-        delete wParam;
+        
+        if (kkt.toFile) {
+            kkt.Log("OpenShift");
+        }
 
-        auto kkt_data = kkt.OpenShift(inputParam.CashierName);
+        kkt.Log(wParam);
+
+        delete wParam;
+        
+        pirit_answer kkt_data = kkt.StartWork();
+        if (!kkt_data.result) {
+            lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
+            TV_VT(pvarRetValue) = VTYPE_BOOL;
+            TV_BOOL(pvarRetValue) = false;
+            return true;
+        }
+        
+        kkt_data = kkt.OpenShift(inputParam.CashierName);
         if (!kkt_data.result) {
             lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
             TV_VT(pvarRetValue) = VTYPE_BOOL;
@@ -579,6 +549,13 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         wchar_t* wParam = nullptr;
         convFromShortWchar(&wParam, TV_WSTR(paParams2));
         _1cv8::CInputParameters inputParam(wParam);
+        
+        if (kkt.toFile) {
+            kkt.Log("CloseShift");
+            kkt.Log(wParam);
+        }
+
+        
         delete wParam;
 
         auto kkt_data = kkt.CloseShift(inputParam.CashierName);
@@ -590,7 +567,9 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         }
 
         _1cv8::COutputParameters outtable = _1cv8::COutputParameters();
-        CreateVarFromString(paParams3, outtable.toXML());
+        auto resul = outtable.toXML();
+        kkt.Log(resul);
+        CreateVarFromString(paParams3, resul);
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = true;
@@ -607,6 +586,8 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         wchar_t* wParam = nullptr;
         convFromShortWchar(&wParam, TV_WSTR(paParams3));
         _1cv8::CCheckPackage inputParam(wParam);
+        kkt.Log("ProcessCheck");
+        kkt.Log(wParam);
         delete wParam;
         
         _1cv8::CDocumentOutputParameters out = _1cv8::CDocumentOutputParameters();
@@ -617,37 +598,58 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
             TV_BOOL(pvarRetValue) = false;
             return true;
         }
-
-        CreateVarFromString(paParams4, out.toXML());
+        auto outresult = out.toXML();
+        kkt.Log(outresult);
+        CreateVarFromString(paParams4, outresult);
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = true;
     }
     return true;
     case eProcessCorrectionCheck:
+        kkt.Log("ProcessCorrectionCheck");
         lastError = AddInError{ 0, L"ProcessCorrectionCheck not implement" };
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = false;
         return true;
 
     case ePrintTextDocument:
+        kkt.Log("PrintTextDocument");
         lastError = AddInError{ 0, L"ePrintTextDocument not implement" };
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = false;
         return true;
 
     case eCashInOutcome:
+        kkt.Log("CashInOutcome");
         lastError = AddInError{ 0, L"eCashInOutcome not implement" };
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = false;
         return true;
 
-    case ePrintXReport:
-        lastError = AddInError{ 0, L"ePrintXReport not implement" };
-        TV_VT(pvarRetValue) = VTYPE_BOOL;
-        TV_BOOL(pvarRetValue) = false;
-        return true;
+    case ePrintXReport: {
+        if (lSizeArray != 2 || !paParams)
+            return false;
+        auto paParams2 = paParams + 1;
 
+        wchar_t* wParam = nullptr;
+        convFromShortWchar(&wParam, TV_WSTR(paParams2));
+        _1cv8::CInputParameters inputParam(wParam);
+        delete wParam;
+
+        auto kkt_data = kkt.PrintXReport(inputParam.CashierName);
+        if (!kkt_data.result) {
+            lastError = AddInError{ 1, L"Error #" + kkt_data.kod };
+            TV_VT(pvarRetValue) = VTYPE_BOOL;
+            TV_BOOL(pvarRetValue) = false;
+            return true;
+        }
+
+        TV_VT(pvarRetValue) = VTYPE_BOOL;
+        TV_BOOL(pvarRetValue) = true;
+
+        return true;
+    }
     case ePrintCheckCopy:
         lastError = AddInError{ 0, L"ePrintCheckCopy not implement" };
         TV_VT(pvarRetValue) = VTYPE_BOOL;
@@ -688,9 +690,21 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         return true;
 
     case eGetLineLength:
-        lastError = AddInError{ 0, L"eGetLineLength not implement" };
+    {
+        tVariant* outParams = paParams + 1;
+        
+        //TV_VT(outParams) = VTYPE_I8;
+        TV_I4(outParams) = 36;
+
+        //if (m_iMemory->AllocMemory((void**)&outParams, sizeof(LONG64)))
+        //{
+        //    TV_VT(outParams) = VTYPE_I8;
+        //    TV_I8(outParams) = 36;
+        //}
+
         TV_VT(pvarRetValue) = VTYPE_BOOL;
-        TV_BOOL(pvarRetValue) = false;
+        TV_BOOL(pvarRetValue) = true;
+    }
         return true;
 
     case eGetInterfaceRevision:
@@ -742,15 +756,35 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         wchar_t* wParam = nullptr;
         convFromShortWchar(&wParam, TV_WSTR(paParams));
         wstring paramName = wParam;
-        convFromShortWchar(&wParam, TV_WSTR(paramVal));
-        wstring wparamVal = wParam;
-        delete wParam;
 
         //wstring paramName = TV_WSTR(paParams);
         
         if (paramName == L"Port") {
+            convFromShortWchar(&wParam, TV_WSTR(paramVal));
+            wstring wparamVal = wParam;
             addInParam.Port = wparamVal;
         }
+        else if (paramName == L"WriteLog"){
+            wstring wparamVal = wParam;
+            addInParam.WriteLog = TV_BOOL(paramVal);
+
+        }
+        else if (paramName == L"Speed"){
+            convFromShortWchar(&wParam, TV_WSTR(paramVal));
+            wstring wparamVal = wParam;
+            addInParam.Speed = wparamVal;
+
+        }
+        else if(paramName == L"LogFileName"){
+            convFromShortWchar(&wParam, TV_WSTR(paramVal));
+            wstring wparamVal = wParam;
+            addInParam.LogFileName = wparamVal;
+
+        }
+
+        delete wParam;
+        
+        //на будщее, что бы не забыть
         /* for (_1cv8::CParam param: addInParam.parametrs)
          {
              if (param.Name == paramName) {
@@ -768,7 +802,8 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         if (lSizeArray != 1 || !paParams)
             return false;
 
-        kkt.Connect(addInParam.Port);
+        //здесь устанавливаем нужные параметры
+        kkt.Connect(addInParam.Port, addInParam.WriteLog ? addInParam.LogFileName : L"");
         CreateVarFromString(paParams, DEVICEID);
 
         TV_VT(pvarRetValue) = VTYPE_BOOL;
@@ -793,9 +828,16 @@ bool CAddInNative::CallAsFunc(const long lMethodNum,
         if (lSizeArray != 2 || !paParams)
             return false;
 
-        CreateVarFromString(paParams, L"Устройство подключено");
         CreateVarFromString(paParams + 1, L"");
 
+        auto kkt_data = kkt.Test();
+        if (!kkt_data.result) {
+            CreateVarFromString(paParams, L"Устройство не отвечает");
+        }
+        else {
+            CreateVarFromString(paParams, L"Устройство подключено");
+        }
+        
         TV_VT(pvarRetValue) = VTYPE_BOOL;
         TV_BOOL(pvarRetValue) = true;
     }
@@ -992,13 +1034,15 @@ bool CAddInNative::PrintCheck(_1cv8::CCheckPackage& xmlcheck, _1cv8::CDocumentOu
 
     for (auto pos : xmlcheck.Positions) {
         wstring VATRate = L"0";
-        if (pos.VATRate == L"none") VATRate = L"4";
-        else if (pos.VATRate == L"20") VATRate = L"1";
-        else if (pos.VATRate == L"10") VATRate = L"2";
-        else if (pos.VATRate == L"0") VATRate = L"3";
-        else if (pos.VATRate == L"20/120") VATRate = L"5";
-        else if (pos.VATRate == L"10/110") VATRate = L"6";
+        if (pos.VATRate == L"none") VATRate = L"3";
+        else if (pos.VATRate == L"20") VATRate = L"0";
+        else if (pos.VATRate == L"10") VATRate = L"1";
+        else if (pos.VATRate == L"0") VATRate = L"2";
+        else if (pos.VATRate == L"20/120") VATRate = L"4";
+        else if (pos.VATRate == L"10/110") VATRate = L"5";
 
+        //size_t SkokaRezat = std::min((size_t)50, pos.Name.size());
+        //pos.Name.resize(pos.Name.size() - SkokaRezat);
         CHECK(kkt.AddGoods(pos.Name, pos.Quantity, pos.PriceWithDiscount, pos.DiscountAmount
             , VATRate, pos.PaymentMethod, pos.CalculationSubject));
     }

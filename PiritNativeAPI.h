@@ -20,8 +20,10 @@ class CAddInNative : public IComponentBase
 public:
     enum Props
     {
-        eText,
-        eInt,
+        ePort,
+        eSpeed,
+        eWriteLog,
+        eLogFileName,
         eLastProp      // Always last
     };
 
@@ -99,8 +101,8 @@ private:
     IAddInDefBase* m_iConnect;
     IMemoryManager* m_iMemory;
 
-    WCHAR_T* Text;
-    int8_t Intt;
+    //WCHAR_T* Text;
+    //int8_t Intt;
     CPiritKKT kkt;
     _1cv8::CTableParameters addInParam;
 

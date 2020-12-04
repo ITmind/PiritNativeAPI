@@ -6,11 +6,53 @@
 #include <iostream>
 #include "convstring.h"
 #include <algorithm>
+#include <stdio.h>
+
+string GetCurrentTimeCrossplatform() {
+    stringstream date;
+    time_t timer = time(0);   // get time now    
+    struct tm* now = new tm();
+
+#ifdef _WINDOWS
+    errno_t err = localtime_s(now, &timer);
+#else
+    struct tm buf;
+    now = localtime_r(&timer, &buf);
+
+#endif // _WINDOWS
+
+    date << put_time(now, "%d.%m.%y %H-%M-%S:");
+    return date.str();
+}
+
+void CPiritKKT::Log(string text) {
+    if (logFile != 0) {
+        string result = GetCurrentTimeCrossplatform() + " --- " +text + "\n";
+        fwrite(result.c_str(), sizeof(char), result.length(), logFile);
+        fflush(logFile);
+    }
+}
+
+void CPiritKKT::Log(wstring text) {
+    Log(conv::unicode::ToCP866(text));
+}
 
 CPiritKKT::CPiritKKT()
 {
+    logFile = 0;
+    toFile = false;
 }
 
+CPiritKKT::~CPiritKKT()
+{
+    if (_com.IsOpened()) {
+        _com.Close();
+    }
+    
+    if (logFile != 0) {
+        fclose(logFile);
+    }
+}
 
 string calcCRC(string packet)
 {
@@ -31,14 +73,17 @@ string calcCRC(string packet)
 
 }
 
-CPiritKKT::~CPiritKKT()
+bool CPiritKKT::Connect(wstring wcomport, wstring logfilename)
 {
-    if (_com.IsOpened()) 
-        _com.Close();
-}
+    if (logfilename != L"") {
+        string _filename = conv::unicode::ToCP866(logfilename);
+        logFile = fopen(_filename.c_str(), "a+");
+        if (logFile != 0) {
+            toFile = true;
+        }
+        return true;
+    }
 
-bool CPiritKKT::Connect(wstring wcomport)
-{
     string comport = conv::unicode::ToCP866(wcomport);
 #ifdef ceWINDOWS
     _com = ce::ceSerial(comport, 57600, 8, 'N', 1); // Windows
@@ -67,51 +112,70 @@ void CPiritKKT::Disconnect()
 
 PiritPacket CPiritKKT::Send(PiritPacket request)
 {
-    string req = conv::unicode::ToCP866(request.toStr());
-    req += calcCRC(req);
-    
-    bool successFlag = _com.Write((char*)(req.c_str()));
-
     string answer;
     char c;
 
-    // в ответ идут всяекие разные символы. ждем начало пакета или обрыв связи
-    do
+    string req = conv::unicode::ToCP866(request.toStr());
+    req += calcCRC(req);
+    
+    if (toFile)
     {
-        ce::ceSerial::Delay(50);
-        c = _com.ReadChar(successFlag); 
-        //cout << "c = " << c << " hex = "<< hex << (int)c << "\n";
-    } while (c != STX && c!='\x0');
+        Log(req);
+        return request.SuccessPacket();
+    }
+    else {
+        bool successFlag = _com.Write((char*)(req.c_str()));
 
-    //если не начало пакета
-    if(c == '\x0')
-        return request.ErrorPacket(L"09");
-    if (c != STX)
-        return request.ErrorPacket();
-    answer += c;
+        // в ответ идут всякие разные символы. ждем начало пакета или обрыв связи
+        do
+        {
+            ce::ceSerial::Delay(50);
+            c = _com.ReadChar(successFlag);
+            //cout << "c = " << c << " hex = "<< hex << (int)c << "\n";
+        } while (c != STX && c != '\x0');
 
-    do
-    {
-        c = _com.ReadChar(successFlag); 
+        //если не начало пакета
+        if (c == '\x0')
+            return request.ErrorPacket(L"09");
+        if (c != STX)
+            return request.ErrorPacket();
+        answer += c;
+
+        do
+        {
+            c = _com.ReadChar(successFlag);
+            if (successFlag)  answer += c;
+        } while (c != ETX);
+
+        //CRC
+        c = _com.ReadChar(successFlag);
         if (successFlag)  answer += c;
-    } while (c != ETX);
+        c = _com.ReadChar(successFlag);
+        if (successFlag)  answer += c;
 
-    //CRC
-    c = _com.ReadChar(successFlag); 
-    if (successFlag)  answer += c;
-    c = _com.ReadChar(successFlag); 
-    if (successFlag)  answer += c;
 
-    PiritPacket answerPacket = PiritPacket(conv::unicode::FromCP866(answer));
-    if(answerPacket.CorrespondsTo(request))
-        return answerPacket;
+        //Log(answer);
+        PiritPacket answerPacket = PiritPacket(conv::unicode::FromCP866(answer));
+        if (answerPacket.CorrespondsTo(request))
+            return answerPacket;
+
+    }
 
     return request.ErrorPacket();
 }
 
+pirit_answer CPiritKKT::Test()
+{
+    Log("Test");
+    PiritPacket request = PiritPacket(L"05");
+    PiritPacket answer = Send(request);
+    return KKT_ANSWER(answer.error);
+}
+
 pirit_answer CPiritKKT::StartWork()
 {
-    
+    Log("StartWork");
+
     wstringstream date;
     time_t timer = time(0);   // get time now    
     struct tm* now = new tm();
@@ -138,7 +202,7 @@ pirit_answer CPiritKKT::StartWork()
 }
 
 pirit_answer CPiritKKT::OpenShift(wstring CashierName)
-{
+{    
     PiritPacket request = PiritPacket(L"23", CashierName);
     PiritPacket answer = Send(request);
     return KKT_ANSWER(answer.error);
@@ -150,6 +214,17 @@ pirit_answer CPiritKKT::CloseShift(wstring CashierName)
     data.push_back(CashierName);
     data.push_back(L"0");
     PiritPacket request = PiritPacket(L"21", data);
+    PiritPacket answer = Send(request);
+
+    return KKT_ANSWER(answer.error);
+}
+
+pirit_answer CPiritKKT::PrintXReport(wstring CashierName)
+{
+    vector<wstring> data;
+    data.push_back(CashierName);
+    data.push_back(L"0");
+    PiritPacket request = PiritPacket(L"20", data);
     PiritPacket answer = Send(request);
 
     return KKT_ANSWER(answer.error);
@@ -204,7 +279,7 @@ pirit_answer CPiritKKT::AddGoods(wstring name, wstring num, wstring price, wstri
 {
     vector<wstring> data;
 
-    data.push_back(name); //(Строка[0...256]) Название товара
+    data.push_back(name.substr(0,55)); // 56 - ограничение пирита. (Строка[0...256]) Название товара
     data.push_back(L""); //Артикул или штриховой код товара/номер ТРК
     data.push_back(num); //Количество товара в товарной позиции
     data.push_back(price); //(Дробное число[0..99999999.99]) Цена товара по данному артикулу

@@ -25,12 +25,12 @@
       "variables": []
     },
     {
-      "name": "WSL-Debug",
-      "generator": "Unix Makefiles",
+      "name": "WSL-GCC-Debug",
+      "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeExecutable": "/usr/bin/cmake",
+      "cmakeExecutable": "cmake",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",

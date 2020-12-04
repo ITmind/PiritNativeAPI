@@ -71,6 +71,11 @@ PiritPacket PiritPacket::ErrorPacket(wstring err)
 	return PiritPacket(id,command,data, err);
 }
 
+PiritPacket PiritPacket::SuccessPacket()
+{
+	return PiritPacket(id, command, data, L"00");
+}
+
 wstring PiritPacket::toStr()
 {
 	wstring result;

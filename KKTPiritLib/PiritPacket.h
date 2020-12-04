@@ -29,6 +29,8 @@ public:
 
 	//если в ответ нет ничего
 	PiritPacket ErrorPacket(wstring err = L"03");
+	//для печати в файл
+	PiritPacket SuccessPacket();
 	wstring toStr();
 	vector<wstring> GetData();
 	bool CorrespondsTo(PiritPacket request);

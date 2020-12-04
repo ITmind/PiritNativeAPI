@@ -19,6 +19,9 @@ namespace _1cv8 {
     //из формата ДДММГГчмс (250220143656)
     //для 2000 годов!
     wstring ConvertToXMLData(wstring datetime) {
+        if (datetime == L"") {
+            return L"";
+        }
         wstringstream ss;
         ss << L"20" << datetime[4] << datetime[5] << "-" << datetime[2] << datetime[3] << "-" << datetime[0] << datetime[1];
         ss << L"T"  << datetime[6] << datetime[7] << ":" << datetime[8] << datetime[9] << ":" << datetime[10] << datetime[11];
@@ -235,7 +238,7 @@ namespace _1cv8 {
         INN = L"";
         SaleAddress = L"";
         SaleLocation = L"";
-        TaxationSystems = L"0";
+        TaxationSystems = L"0,3";
         IsOffline = L"False";
         IsEncrypted = L"False";
         IsService = L"True";
@@ -329,13 +332,13 @@ namespace _1cv8 {
     CDriverDescription::CDriverDescription()
     {
         Name = L"PiritKKT OpenSource driver";
-        Description = L"crossplatform driver";
+        Description = L"PiritKKT crossplatform driver";
         EquipmentType = L"ККТ";
         IntegrationComponent = L"False";
-        MainDriverInstalled = L"False";
-        DriverVersion = L"0.1";
-        IntegrationComponentVersion = L"0.0.2.0";
-        DownloadURL = L"www.github.com";
+        MainDriverInstalled = L"True";
+        DriverVersion = L"0.5";
+        IntegrationComponentVersion = DriverVersion;
+        DownloadURL = L"https://github.com/ITmind/PiritNativeAPI";
         LogIsEnabled = L"False";
         LogPath = L"";
     }
@@ -363,10 +366,21 @@ namespace _1cv8 {
     }
     CTableParameters::CTableParameters()
     {
-        Port = L"COM3";
+        
         Speed = L"57600";
-        //parametrs.push_back(CParam(L"Port", L"COM Порт", L"Number", L"3"));
-        //parametrs.push_back(CParam(L"Speed", L"Скорость", L"Number", L"57600"));
+        WriteLog = false;
+#ifdef _WINDOWS
+        Port = L"COM1";
+        LogFileName = L"c:\\temp\\log.txt";
+#else
+        Port = L"/dev/ttyS0";
+        LogFileName = L"/home/user/log.txt";
+
+#endif // _WINDOWS
+        parametrs.push_back(CParam(L"Port", L"COM Порт", L"String", Port));
+        parametrs.push_back(CParam(L"Speed", L"Скорость", L"String", Speed));
+        parametrs.push_back(CParam(L"WriteLog", L"Печать в файл (эмуляция)", L"Boolean", L"False"));
+        parametrs.push_back(CParam(L"LogFileName", L"Имя файла", L"String", LogFileName));
     }
 
     wstring CTableParameters::toXML()
@@ -379,7 +393,8 @@ namespace _1cv8 {
         pugi::xml_node page = root.append_child(L"Page");
         wstring Caption = L"Параметры";
         ADDATTR(page, Caption);
-        pugi::xml_node paramnode = page.append_child(L"Parameter");
+
+        /*pugi::xml_node paramnode = page.append_child(L"Parameter");
         attr = paramnode.append_attribute(L"Name");
         attr.set_value(L"Port");
         attr = paramnode.append_attribute(L"Caption");
@@ -387,21 +402,26 @@ namespace _1cv8 {
         attr = paramnode.append_attribute(L"TypeValue");
         attr.set_value(L"String");
         attr = paramnode.append_attribute(L"DefaultValue");
-        attr.set_value(Port.c_str());
+        attr.set_value(Port.c_str());*/
 
-        //for (CParam param : parametrs) {
-        //    pugi::xml_node paramnode = page.append_child(L"Parameter");
-        //    ADDATTR(paramnode, param.Name);
-        //    ADDATTR(paramnode, param.Caption);
-        //    //ADDATTR(paramnode, param.Description);
-        //    ADDATTR(paramnode, param.TypeValue);
-        //    //ADDATTR(paramnode, param.FieldFormat);
-        //    ADDATTR(paramnode, param.DefaultValue);
-        //    //ADDATTR(paramnode, param.ReadOnly);
-        //    ADDATTR(paramnode, param.ChoiceList);
-        //    //ADDATTR(paramnode, param.PageCaption);
-        //    //ADDATTR(paramnode, param.GroupCaption);
-        //}        
+        for (CParam param : parametrs) {
+            pugi::xml_node paramnode = page.append_child(L"Parameter");
+            attr = paramnode.append_attribute(L"Name");         attr.set_value(param.Name.c_str());
+            attr = paramnode.append_attribute(L"Caption");      attr.set_value(param.Caption.c_str());
+            attr = paramnode.append_attribute(L"TypeValue");    attr.set_value(param.TypeValue.c_str());
+            attr = paramnode.append_attribute(L"DefaultValue"); attr.set_value(param.DefaultValue.c_str());
+            attr = paramnode.append_attribute(L"ChoiceList");   attr.set_value(param.ChoiceList.c_str());
+            
+            //ADDATTR(paramnode, param.Caption);
+            //ADDATTR(paramnode, param.Description);
+            //ADDATTR(paramnode, param.TypeValue);
+            //ADDATTR(paramnode, param.FieldFormat);
+            //ADDATTR(paramnode, param.DefaultValue);
+            //ADDATTR(paramnode, param.ReadOnly);
+            //ADDATTR(paramnode, param.ChoiceList);
+            //ADDATTR(paramnode, param.PageCaption);
+            //ADDATTR(paramnode, param.GroupCaption);
+        }        
 
         doc.save(ss);
         return ss.str();

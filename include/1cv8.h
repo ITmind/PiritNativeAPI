@@ -188,15 +188,6 @@ namespace _1cv8 {
 		wstring toXML();
 	};
 
-	struct CTableParameters {
-		//vector<CParam> parametrs;
-		wstring Port;
-		wstring Speed;
-		
-		CTableParameters();
-		wstring toXML();
-	};
-
 	struct CParam {
 		wstring Name;
 		wstring Caption;
@@ -210,5 +201,18 @@ namespace _1cv8 {
 		wstring GroupCaption;
 		CParam(wstring Name, wstring Caption, wstring TypeValue, wstring DefaultValue);
 	};
+
+	struct CTableParameters {
+		vector<CParam> parametrs;
+		wstring Port;
+		wstring Speed;
+		bool WriteLog;
+		wstring LogFileName;
+		
+		CTableParameters();
+		wstring toXML();
+	};
+
+	
 
 }
